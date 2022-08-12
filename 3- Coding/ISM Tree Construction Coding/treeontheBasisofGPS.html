@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        .node {
+            cursor: pointer;
+        }
+        
+        .node circle {
+            fill: #fff;
+            stroke: #C0C0C0;
+            stroke-width: 2px;
+        }
+        
+        .node text {
+            font: 15px sans-serif;
+        }
+        
+        .link {
+            fill: none;
+            stroke: #C0C0C0;
+            /* stroke-width: 2px; */
+        }
+    </style>
+
+</head>
+
+<body>
+    <script src="lib/d3.v3.min.js"></script>
+
+    <script>
+        getData();
+
+
+        function calcCrow(lat1, lon1, lat2, lon2) {
+            var R = 6378.137; // km
+            var dLat = toRad(lat2 - lat1);
+            var dLon = toRad(lon2 - lon1);
+            var lat1 = toRad(lat1);
+            var lat2 = toRad(lat2);
+
+            var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            var d = R * c;
+            return d * 1000;
+        }
+
+        function toRad(Value) {
+            return Value * Math.PI / 180;
+        }
+
+        function onlyUnique(value, index, self) {
+            return self.indexOf(value) === index;
+        }
+
+        var arrayofallusers = [];
+        var columns;
+        var userid = [];
+        var useridinterctwith = [];
+        var user_profile = {};
+        var numbeofArr = {};
+
+
+
+
+        var TotalPatientSensorsDataLat = {};
+        var TotalPatientSensorsDataLon = {};
+
+        var TotalUserSensorsDataLat = {};
+        var TotalUserSensorsDataLon = {};
+
+        var PatientDates = {};
+        var PatientAge = {};
+        var UserDates = {};
+        var UserAge = {};
+
+        var UserTime = {};
+
+        async function getData() {
+
+            var today = new Date();
+            var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+
+
+            const regUsers = await fetch('regUsers.json');
+            var regUsersData = await regUsers.json();
+
+            const UsersStatus = await fetch('userstatus.json');
+            var UsersStatusData = await UsersStatus.json();
+
+            var totalPatient = [];
+            var totalUsers = [];
+            for (let user of regUsersData) {
+                var patientt = '';
+                for (let patient of UsersStatusData) {
+                    if (user.uname === patient.uname) {
+                        if (patient.status === 'Infected') {
+                            patientt = patient.status;
+
+                        } else {
+                            patientt = patient.status;
+                        }
+                    }
+                }
+                if (patientt === 'Infected') {
+                    totalPatient.push(user.uname);
+                } else {
+                    totalUsers.push(user.uname);
+                }
+            }
+
+
+            const PatientTraces = await fetch('latlongdata.json');
+            var PatientTracesData = await PatientTraces.json();
+            for (i in totalPatient) {
+                var patientLat = (`${totalPatient[i]}`);
+                patientLat = [];
+                var patientLon = (`${totalPatient[i]}`);
+                patientLon = [];
+                var patientdate = (`${totalPatient[i]}`);
+                patientdate = [];
+                var patientage = (`${totalPatient[i]}`);
+                patientage = [];
+                for (let ltln of PatientTracesData) {
+                    if (totalPatient[i] === ltln.uname) {
+                        patientLat.push(Number(ltln.lat));
+                        patientLon.push(Number(ltln.long));
+                        patientdate.push(ltln.date);
+                        patientage.push(ltln.age);
+                    }
+                }
+                TotalPatientSensorsDataLat[`${totalPatient[i]}`] = patientLat;
+                TotalPatientSensorsDataLon[`${totalPatient[i]}`] = patientLon;
+                PatientDates[`${totalPatient[i]}`] = patientdate;
+                PatientAge[`${totalPatient[i]}`] = patientage;
+
+            }
+
+            var normalUsers = [];
+
+            for (i in totalUsers) {
+                var userLat = (`${totalUsers[i]}`);
+                userLat = [];
+                var userLon = (`${totalUsers[i]}`);
+                userLon = [];
+                var usertdate = (`${totalPatient[i]}`);
+                usertdate = [];
+
+                var usertime = (`${totalPatient[i]}`);
+                usertime = [];
+                var userage = (`${totalPatient[i]}`);
+                userage = [];
+                for (let ltln of PatientTracesData) {
+                    if (totalUsers[i] === ltln.uname) {
+                        userLat.push(Number(ltln.lat));
+                        userLon.push(Number(ltln.long));
+                        normalUsers.push(ltln.uname);
+                        usertdate.push(ltln.date);
+                        userage.push(ltln.age);
+                        usertime.push(ltln.time);
+                    }
+                }
+                TotalUserSensorsDataLat[`${totalUsers[i]}`] = userLat;
+                TotalUserSensorsDataLon[`${totalUsers[i]}`] = userLon;
+                UserDates[`${totalUsers[i]}`] = usertdate;
+                UserAge[`${totalUsers[i]}`] = userage;
+                UserTime[`${totalUsers[i]}`] = usertime;
+            }
+
+            console.log("Total patient \n");
+            console.log(totalPatient);
+            console.log(PatientAge);
+
+
+
+            console.log("Total Normal  \n");
+            console.log(normalUsers);
+            console.log(UserAge);
+
+
+            var listArray = [];
+            var friends = [];
+
+
+
+            const currentdate = Date.parse(date);
+            // console.log(date);
+            //console.log(currentdate);
+            const TotaldayRecord1 = 3;
+            const totaldelydaysPositive = 86400000 * TotaldayRecord1;
+
+            const TotaldayRecord2 = 14;
+            const totaldelydaysFromPatient = 86400000 * TotaldayRecord2;
+
+            var distofUserfromPatient = 0;
+            var linefromPatient = [];
+
+            var coronaLevel = "level_4";
+            if (coronaLevel === "level_2") {
+                noof_layer = 4;
+            } else if (coronaLevel === "level_3") {
+                noof_layer = 7;
+            } else if (coronaLevel === "level_4") {
+                noof_layer = 10;
+            } else {
+                noof_layer = 2;
+            }
+
+            for (var i = 0; i < (Object.keys(totalPatient).length); i++) {
+                if (i == 0 || i == 1 || i == 2) {
+
+                    var patientLat = (`${totalPatient[i]}`);
+                    var Plat = TotalPatientSensorsDataLat[patientLat];
+                    var patientLon = (`${totalPatient[i]}`);
+                    var Plon = TotalPatientSensorsDataLon[patientLon];
+
+                    var patientDat = (`${totalPatient[i]}`);
+                    var Pdate = PatientDates[patientDat];
+
+                    var patientAge = (`${totalPatient[i]}`);
+                    var PAge = PatientAge[patientAge];
+
+                    listArray.push({
+                        'name': 'Patient ' + totalPatient[i],
+                        'parent': null,
+                        'distance': Number(0.2),
+                        'age': PAge[i],
+                        'time': 0
+                    }, );
+
+                    for (var j = 0; j < (Object.keys(totalUsers).length); j++) {
+
+                        var userLat = (`${totalUsers[j]}`);
+                        var Ulat = TotalUserSensorsDataLat[userLat];
+                        var userLon = (`${totalUsers[j]}`);
+                        var Ulon = TotalUserSensorsDataLon[userLon];
+
+                        var UserDat = (`${totalUsers[j]}`);
+                        var Udate = UserDates[UserDat];
+
+
+                        var Userage = (`${totalUsers[j]}`);
+                        var UAge = UserAge[Userage];
+
+                        var Usertime = (`${totalUsers[j]}`);
+                        var UTime = UserTime[Usertime];
+
+                        var sizeofLatLon = 0;
+                        if (Ulat.length < Plat.length) {
+                            sizeofLatLon = Ulat.length;
+                        } else {
+                            sizeofLatLon = Plat.length;
+                        }
+                        if (!(sizeofLatLon == 0)) {
+                            var flog = 1;
+                            for (var k = 0; k < sizeofLatLon; k++) {
+                                distofUserfromPatient = calcCrow(Plat[k], Plon[k], Ulat[k], Ulon[k]).toFixed(5);
+                                if (flog == 1) {
+
+                                    if ((distofUserfromPatient <= 3)) { // less then or equal to 3 meter to patient
+                                        const PdateM = Date.parse(Pdate[k]);
+                                        const UdateM = Date.parse(Udate[k]);
+
+
+                                        if (PdateM == currentdate || (PdateM - totaldelydaysPositive) <= currentdate) {
+                                            if (Pdate[k] === Udate[k] || (PdateM - totaldelydaysFromPatient) <= UdateM) {
+                                                //   console.log(distofUserfromPatient, Pdate[k], patientDat, Udate[k], UserDat);
+                                                var time_start = new Date();
+                                                var time_end = new Date();
+                                                var value_start = UTime[k].split(':');
+                                                var value_end = UTime[UTime.length - 1].split(':');
+                                                time_start.setHours(value_start[0], value_start[1], value_start[2], 0);
+                                                time_end.setHours(value_end[0], value_end[1], value_end[2], 0);
+                                                var diff = time_end - time_start;
+                                                var minutes = Math.floor(diff / 60000);
+                                                console.log(totalPatient[i], Usertime, minutes);
+
+                                                listArray.push({
+                                                    'name': totalUsers[j],
+                                                    'parent': 'Patient ' + totalPatient[i],
+                                                    'distance': Number(distofUserfromPatient),
+                                                    'age': UAge[k],
+                                                    'time': minutes
+                                                }, );
+
+                                                friends.push(totalUsers[j]);
+                                                flog = 0;
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+
+                    }
+
+                    p2 = [];
+                    p22 = [];
+                    for (var layer = 0; layer < noof_layer - 1; layer++) { // deciding number of layers
+                        for (var f in friends) {
+                            p2.push(friends[f]);
+                        }
+                        p22 = p2.filter(onlyUnique);
+                        friends = [];
+
+                        for (var ii = 0; ii < (Object.keys(p22).length); ii++) {
+                            var fpatientLat = (`${p22[ii]}`);
+                            var fPlat = TotalUserSensorsDataLat[fpatientLat];
+                            var fpatientLon = (`${p22[ii]}`);
+                            var fPlon = TotalUserSensorsDataLon[fpatientLon];
+
+                            var fpatientDate = (`${p22[ii]}`);
+                            var fPDate = UserDates[fpatientDate];
+
+
+                            var fpatientTime = (`${p22[ii]}`);
+                            var fPTime = UserTime[fpatientTime];
+
+
+                            for (var jj = 0; jj < (Object.keys(totalUsers).length); jj++) {
+
+                                var ffpatientLat = (`${totalUsers[jj]}`);
+                                var ffPlat = TotalUserSensorsDataLat[ffpatientLat];
+                                var ffpatientLon = (`${totalUsers[jj]}`);
+                                var ffPlon = TotalUserSensorsDataLon[ffpatientLon];
+
+                                var ffUserDate = (`${totalUsers[jj]}`);
+                                var ffUDate = UserDates[ffUserDate];
+
+                                var ffUserage = (`${totalUsers[jj]}`);
+                                var ffUage = UserAge[ffUserage];
+
+                                var sizeofLatLon = 0;
+                                if (ffPlat.length < fPlat.length) {
+                                    sizeofLatLon = ffPlat.length;
+                                } else {
+                                    sizeofLatLon = fPlat.length;
+                                }
+
+                                if (!(fpatientLat === ffpatientLat)) {
+                                    if (!(sizeofLatLon == 0)) {
+
+                                        var flag = 1;
+                                        for (var k = 0; k < sizeofLatLon; k++) {
+                                            distofUserfromPatient = calcCrow(fPlat[k], fPlon[k], ffPlat[k], ffPlon[k]).toFixed(5);
+                                            if (flag == 1) {
+
+                                                if ((distofUserfromPatient <= 3)) { // less then or equal to contacts of contacts
+                                                    // console.log(distofUserfromPatient, fPDate[k], fpatientDate, ffUDate[k], ffUserDate);
+                                                    //  console.log(Pdate[k], Udate[k]);
+                                                    const PdateM = Date.parse(fPDate[k]);
+                                                    const UdateM = Date.parse(ffUDate[k]);
+                                                    if (fPDate[k] === ffUDate[k] || (PdateM - totaldelydaysFromPatient) <= UdateM) {
+                                                        // console.log(distofUserfromPatient, fPDate[k], fpatientDate, ffUDate[k], ffUserDate);
+                                                        var time_start = new Date();
+                                                        var time_end = new Date();
+                                                        var value_start = fPTime[k].split(':');
+                                                        var value_end = fPTime[fPTime.length - 1].split(':');
+                                                        time_start.setHours(value_start[0], value_start[1], value_start[2], 0);
+                                                        time_end.setHours(value_end[0], value_end[1], value_end[2], 0);
+                                                        var diff = time_end - time_start;
+                                                        var minutes = Math.floor(diff / 60000);
+                                                        //  console.log(totalUsers[jj], Usertime, minutes);
+
+                                                        listArray.push({
+                                                            'name': totalUsers[jj],
+                                                            'parent': p22[ii],
+                                                            'distance': Number(distofUserfromPatient),
+                                                            'age': ffUage[k],
+                                                            'time': minutes
+                                                        }, );
+                                                        friends.push(totalUsers[jj]);
+                                                        flag = 0;
+                                                    }
+
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                }
+                            }
+
+
+                        }
+                        p2 = [];
+                        p22 = [];
+                    }
+
+
+
+                    //   console.log(listArray);
+                    const result = [];
+                    const map = new Map();
+                    for (const item of listArray) {
+                        if (!map.has(item.name)) {
+                            map.set(item.name, true); // set any value to Map
+                            result.push({
+                                name: item.name,
+                                parent: item.parent,
+                                distance: item.distance,
+                                age: item.age,
+                                time: item.time
+                            });
+                        }
+                    }
+                    createVerticalTree(result);
+                    listArray = [];
+                }
+            }
+
+
+        }
+
+        function createVerticalTree(arr) {
+            console.log(arr);
+            const nest = (items, name = null, link = 'parent') =>
+                items
+                .filter(item => item[link] === name)
+                .map(item => ({...item,
+                    children: nest(items, item.name)
+                }));
+
+            // ************** Generate the tree diagram	 *****************
+            var margin = {
+                    top: 40,
+                    right: 120,
+                    bottom: 20,
+                    left: 120
+                },
+                width = 1500 - margin.right - margin.left,
+                height = 1500 - margin.top - margin.bottom;
+
+            var i = 0,
+                duration = 750,
+                root;
+
+            var tree = d3.layout.tree()
+                .size([height, width]);
+
+            var diagonal = d3.svg.diagonal()
+                .projection(function(d) {
+                    return [d.x, d.y];
+                });
+
+            var svg = d3.select("body").append("svg")
+                .attr("width", width + margin.right + margin.left)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            // var nodes = d3.hierarchy(nest(arr)[0]);
+
+            root = nest(arr)[0];
+            // root.x0 = height / 2;
+            // root.y0 = 0;
+
+            update(root);
+
+            d3.select(self.frameElement).style("height", "500px");
+            // d3.select("svg").transition()
+            //   .duration(duration)
+            //   .attr("height", height);
+
+            // Collapse after the second level
+            root.children.forEach(collapse);
+
+            update(root);
+
+            // Collapse the node and all it's children
+            function collapse(d) {
+
+                // console.log(d);
+                if (d.children) {
+                    d._children = d.children
+                    d._children.forEach(collapse)
+                    d.children = null
+                }
+            }
+
+            function update(source) {
+                // Compute the new tree layout.
+                var nodes = tree.nodes(root).reverse(),
+                    links = tree.links(nodes);
+
+                // Normalize for fixed-depth.
+                nodes.forEach(function(d) {
+                    d.y = d.depth * 180;
+                });
+                // Update the nodes…
+                var node = svg.selectAll("g.node")
+                    .data(nodes, function(d) {
+                        return d.id || (d.id = ++i);
+                    });
+                // Enter any new nodes at the parent's previous position.
+                var nodeEnter = node.enter().append("g")
+                    .attr("class", "node")
+                    .attr("transform", function(d) {
+                        return "translate(" + source.x0 + "," + source.y0 + ")";
+                    })
+                    .on("click", click);
+
+                nodeEnter.append("circle")
+                    .attr("r", 10)
+                    .style("fill", function(d) {
+                        return d._children ? "#C0C0C0" : "#fff";
+                    });
+
+                nodeEnter.append("text")
+                    .attr("y", function(d) {
+                        return d.children || d._children ? -18 : 18;
+                    })
+                    .attr("dy", ".35em")
+                    .attr("text-anchor", function(d) {
+                        return d.children || d._children ? "end" : "start";
+                    })
+                    .text(function(d) {
+                        return d.name
+                            // return d.name + " \nDistance " + d.distance;
+                    })
+                    .style("fill-opacity", 1e-6);
+
+                // Transition nodes to their new position.
+                var nodeUpdate = node.transition()
+                    .duration(duration)
+                    .attr("transform", function(d) {
+                        return "translate(" + d.x + "," + d.y + ")";
+                    });
+
+                nodeUpdate.select("circle")
+                    .attr("r", 10)
+                    .style("fill", function(d) {
+                        // console.log(d.distance);
+                        if (d.distance <= 0.5) {
+                            return d._children ? "red" : "#fff";
+                        }
+                        if (d.distance <= 1) {
+                            return d._children ? "red" : "#fff";
+                        }
+                        if (d.distance <= 1.5) {
+                            return d._children ? "orange" : "#fff";
+                        }
+                        if (d.distance <= 2) {
+                            return d._children ? "yellow" : "#fff";
+                        }
+                        if (d.distance <= 2.5) {
+                            return d._children ? "green" : "#fff";
+                        }
+                        if (d.distance <= 3) {
+                            return d._children ? "blue" : "#fff";
+                        } else {
+                            return d._children ? "blue" : "#fff";
+                        }
+                    })
+                    .style("stroke", function(d) {
+                        if (d.distance <= 0.5) {
+                            return "red";
+                        }
+                        if (d.distance <= 1) {
+                            return "red";
+                        }
+                        if (d.distance <= 1.5) {
+                            return "orange";
+                        }
+                        if (d.distance <= 2) {
+                            return "yellow";
+                        }
+                        if (d.distance <= 2.5) {
+                            return "green";
+                        }
+                        if (d.distance <= 3) {
+                            return "blue";
+                        } else {
+                            return "blue";
+                        }
+                    });
+
+                nodeUpdate.select("text")
+                    .style("fill-opacity", 1);
+
+                // Transition exiting nodes to the parent's new position.
+                var nodeExit = node.exit().transition()
+                    .duration(duration)
+                    .attr("transform", function(d) {
+                        return "translate(" + source.x + "," + source.y + ")";
+                    })
+                    .remove();
+
+                nodeExit.select("circle")
+                    .attr("r", 1e-6);
+
+                nodeExit.select("text")
+                    .style("fill-opacity", 1e-6);
+
+                // Update the links...
+                var link = svg.selectAll("path.link")
+                    .data(links, function(d) {
+                        return d.target.id;
+                    });
+
+                // Enter any new links at the parent's previous position.
+                link.enter().insert("path", "g")
+                    .attr("class", "link")
+                    .attr("stroke-width", function(d) {
+                        //  console.log(d);
+                        // console.log(d.target.distance);
+
+                        return linkWidth(d.target.distance, d.target.age, d.target.time);
+                    })
+                    .attr("d", function(d) {
+                        var o = {
+                            x: source.x0,
+                            y: source.y0
+                        };
+                        return diagonal({
+                            source: o,
+                            target: o
+                        });
+                    })
+                    .style("stroke", function(d) {
+                        // console.log(d);
+                        // console.log(d.target.distance);
+                        return linkColor(d.target.distance);
+                    });
+
+                // Transition links to their new position.
+                link.transition()
+                    .duration(duration)
+                    .attr("d", diagonal);
+
+                // Transition exiting nodes to the parent's new position.
+                link.exit().transition()
+                    .duration(duration)
+                    .attr("d", function(d) {
+
+                        var o = {
+                            x: source.x,
+                            y: source.y
+                        };
+                        return diagonal({
+                            source: o,
+                            target: o
+                        });
+                    })
+                    .remove();
+
+                // Stash the old positions for transition.
+                nodes.forEach(function(d) {
+                    d.x0 = d.x;
+                    d.y0 = d.y;
+                });
+            }
+
+
+            // Toggle children on click.
+            function click(d) {
+                if (d.children) {
+                    d._children = d.children;
+                    d.children = null;
+                } else {
+                    d.children = d._children;
+                    d._children = null;
+                }
+                update(d);
+            }
+
+            function linkColor(node_name) {
+                //console.log(node_name);
+                switch (true) {
+                    case (node_name <= 0.5):
+                        return 'red';
+                        break;
+                    case (node_name <= 1):
+                        return 'red';
+                        break;
+                    case (node_name <= 1.5):
+                        return 'orange';
+                        break;
+                    case (node_name <= 2):
+                        return 'yellow';
+                        break;
+                    case (node_name <= 2.5):
+                        return 'green';
+                        break;
+                    case (node_name <= 3):
+                        return 'blue';
+                        break;
+                    default:
+                        return 'blue';
+                }
+            }
+
+            function linkWidth(node_distance, node_age, node_time) {
+                // console.log(node_name);
+                var tieStrengthTime = 1;
+                if (tieStrengthTime <= 2) {
+                    tieStrengthTime = 1;
+                } else if (tieStrengthTime > 2 && tieStrengthTime <= 4) {
+                    tieStrengthTime = 1.2;
+                } else if (tieStrengthTime > 4 && tieStrengthTime <= 7) {
+                    tieStrengthTime = 1.4
+                } else if (tieStrengthTime > 7 && tieStrengthTime <= 10) {
+                    tieStrengthTime = 1.6
+                } else if (tieStrengthTime > 10 && tieStrengthTime <= 15) {
+                    tieStrengthTime = 1.8
+                } else if (tieStrengthTime > 15 && tieStrengthTime <= 20) {
+                    tieStrengthTime = 2
+                } else if (tieStrengthTime > 20 && tieStrengthTime <= 25) {
+                    tieStrengthTime = 2.2
+                } else {
+                    tieStrengthTime = 3;
+                }
+                var tieStrength = 1;
+                if (node_age <= 20) {
+                    tieStrength = 0.7;
+                } else if (node_age > 20 && node_age <= 30) {
+                    tieStrength = 0.2;
+                } else if (node_age > 30 && node_age <= 40) {
+                    tieStrength = 0.3
+                } else if (node_age > 40 && node_age <= 50) {
+                    tieStrength = 0.4
+                } else if (node_age > 50 && node_age <= 60) {
+                    tieStrength = 0.6
+                } else if (node_age > 60 && node_age <= 70) {
+                    tieStrength = 0.8
+                } else if (node_age > 70 && node_age <= 80) {
+                    tieStrength = 1
+                } else {
+                    tieStrength = 2;
+                }
+                switch (true) {
+                    case (node_distance <= 0.5):
+                        return 7 * tieStrength * tieStrengthTime;
+                        break;
+                    case (node_distance <= 1):
+                        return 6 * tieStrength * tieStrengthTime;
+                        break;
+                    case (node_distance <= 1.5):
+                        return 5 * tieStrength * tieStrengthTime;
+                        break;
+                    case (node_distance <= 2):
+                        return 4 * tieStrength * tieStrengthTime;
+                        break;
+                    case (node_distance <= 2.5):
+                        return 3 * tieStrength * tieStrengthTime;
+                        break;
+                    case (node_distance <= 3):
+                        return 2 * tieStrength * tieStrengthTime;
+                        break;
+                    default:
+                        return 1 * tieStrength * tieStrengthTime;
+                }
+            }
+        }
+
+        function treeploting(arr) {
+            const nest = (items, name = null, link = 'parent') =>
+                items
+                .filter(item => item[link] === name)
+                .map(item => ({...item,
+                    children: nest(items, item.name)
+                }));
+
+            var margin = {
+                    top: 40,
+                    right: 40,
+                    bottom: 50,
+                    left: 90
+                },
+                width = 600 - margin.left - margin.right,
+                height = 600 - margin.top - margin.bottom;
+            // declares a tree layout and assigns the size
+            var treemap = d3.tree()
+                .size([width, height]);
+
+            var nodes = d3.hierarchy(nest(arr)[0]);
+
+            // maps the node data to the tree layout
+            nodes = treemap(nodes);
+
+            // append the svg obgect to the body of the page
+            // appends a 'group' element to 'svg'
+            // moves the 'group' element to the top left margin
+            var svg = d3.select("body").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom),
+                g = svg.append("g")
+                .attr("transform",
+                    "translate(" + margin.left + "," + margin.top + ")");
+
+            // adds the links between the nodes
+            var link = g.selectAll(".link")
+                .data(nodes.descendants().slice(1))
+                .enter().append("path")
+                .attr("class", "link")
+                .attr("d", function(d) {
+                    return "M" + d.x + "," + d.y +
+                        "C" + d.x + "," + (d.y + d.parent.y) / 2 +
+                        " " + d.parent.x + "," + (d.y + d.parent.y) / 2 +
+                        " " + d.parent.x + "," + d.parent.y;
+                });
+
+            // adds each node as a group
+            var node = g.selectAll(".node")
+                .data(nodes.descendants())
+                .enter().append("g")
+                .attr("class", function(d) {
+                    return "node" +
+                        (d.children ? " node--internal" : " node--leaf");
+                })
+                .attr("transform", function(d) {
+                    return "translate(" + d.x + "," + d.y + ")";
+                });
+
+            // adds the circle to the node
+            node.append("circle")
+                .attr("r", 10);
+
+            // adds the text to the node
+            node.append("text")
+                .attr("dy", ".35em")
+                .attr("y", function(d) {
+                    return d.children ? -20 : 20;
+                })
+                .style("text-anchor", "middle")
+                .text(function(d) {
+                    return d.data.name;
+                });
+
+        }
+    </script>
+</body>
+
+</html>

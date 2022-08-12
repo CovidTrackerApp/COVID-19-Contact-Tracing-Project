@@ -1,0 +1,305 @@
+[{
+        "uname": "junaid45",
+        "password": "$2b$10$SGjM0ZbO7/wwOw4OhvseYOOrCwDE40NyXttX4kG2z/Ym55NtgE0aG",
+        "ph_no": "+821234567891",
+        "email": "dianujkotov15@gmail.com",
+        "age": 23,
+        "gender": "Male",
+        "u_beaconid": "34366562376636302d653232382d3131j",
+        "otp": 40088,
+        "fname": "Junaid Khan"
+    },
+    {
+        "uname": "wasay123",
+        "password": "$2b$10$Wpe.A8Xg2bWwX9Nq9uishev.PaBzXBNhPfHJkqMhD/w8mFiIZx83.",
+        "ph_no": "+820121880131",
+        "email": "wasay@kau.kr",
+        "age": 24,
+        "gender": "Male",
+        "u_beaconid": "66626334396232302d653232372d3131a",
+        "otp": 15519,
+        "fname": "Abdul Wasay Sardar"
+    },
+
+    {
+        "uname": "furqan",
+        "password": "$2b$10$GWkYjK1SKGh7E5dZHdWoB.DTr0V/N47MtraNwrvkdyUj7WlKswkrm",
+        "ph_no": "+821234867896",
+        "email": "farmankttk@ciit-attock.edu.pk",
+        "age": 37,
+        "gender": "Male",
+        "u_beaconid": "38386436306336302d646663362cc",
+        "otp": 64345,
+        "fname": "furqan"
+    },
+    {
+        "uname": "bacha",
+        "password": "$2b$10$GWkYjK1SKGh7E5dZHdWoB.DTr0V/N47MtraNwrvkdyUj7WlKswkrm",
+        "ph_no": "+821234867896",
+        "email": "farmankttk@ciit-attock.edu.pk",
+        "age": 37,
+        "gender": "Male",
+        "u_beaconid": "38386436306336302d646663362b",
+        "otp": 64345,
+        "fname": "bacha"
+    },
+    {
+        "uname": "diljaan",
+        "password": "$2b$10$GWkYjK1SKGh7E5dZHdWoB.DTr0V/N47MtraNwrvkdyUj7WlKswkrm",
+        "ph_no": "+821234867896",
+        "email": "farmankttk@ciit-attock.edu.pk",
+        "age": 37,
+        "gender": "Male",
+        "u_beaconid": "38386436306336302d64666asd",
+        "otp": 64345,
+        "fname": "diljaan"
+    },
+    {
+        "uname": "khan",
+        "password": "$2b$10$GWkYjK1SKGh7E5dZHdWoB.DTr0V/N47MtraNwrvkdyUj7WlKswkrm",
+        "ph_no": "+821234867896",
+        "email": "farmankttk@ciit-attock.edu.pk",
+        "age": 37,
+        "gender": "Male",
+        "u_beaconid": "38386436306336302d64666wer",
+        "otp": 64345,
+        "fname": "khan"
+    },
+    {
+        "uname": "islam",
+        "password": "$2b$10$GWkYjK1SKGh7E5dZHdWoB.DTr0V/N47MtraNwrvkdyUj7WlKswkrm",
+        "ph_no": "+821234867896",
+        "email": "farmankttk@ciit-attock.edu.pk",
+        "age": 37,
+        "gender": "Male",
+        "u_beaconid": "38386436306336302d64666isl",
+        "otp": 64345,
+        "fname": "islam"
+    },
+    {
+        "uname": "babar",
+        "password": "$2b$10$GWkYjK1SKGh7E5dZHdWoB.DTr0V/N47MtraNwrvkdyUj7WlKswkrm",
+        "ph_no": "+821234867896",
+        "email": "farmankttk@ciit-attock.edu.pk",
+        "age": 37,
+        "gender": "Male",
+        "u_beaconid": "38386436306336302d64666bab",
+        "otp": 64345,
+        "fname": "babar"
+    },
+    {
+        "uname": "Aman",
+        "password": "$2b$10$GWkYjK1SKGh7E5dZHdWoB.DTr0V/N47MtraNwrvkdyUj7WlKswkrm",
+        "ph_no": "+821234867896",
+        "email": "farmankttk@ciit-attock.edu.pk",
+        "age": 37,
+        "gender": "Male",
+        "u_beaconid": "38386436306336302d64666am",
+        "otp": 64345,
+        "fname": "aman"
+    },
+    {
+        "uname": "waqas",
+        "password": "$2b$10$GWkYjK1SKGh7E5dZHdWoB.DTr0V/N47MtraNwrvkdyUj7WlKswkrm",
+        "ph_no": "+821234867896",
+        "email": "farmankttk@ciit-attock.edu.pk",
+        "age": 37,
+        "gender": "Male",
+        "u_beaconid": "38386436306336302d64666waqas",
+        "otp": 64345,
+        "fname": "waqas"
+    },
+    {
+        "uname": "zaman",
+        "password": "$2b$10$GWkYjK1SKGh7E5dZHdWoB.DTr0V/N47MtraNwrvkdyUj7WlKswkrm",
+        "ph_no": "+821234867896",
+        "email": "farmankttk@ciit-attock.edu.pk",
+        "age": 37,
+        "gender": "Male",
+        "u_beaconid": "38386436306336302d64666zaman",
+        "otp": 64345,
+        "fname": "zaman"
+    },
+    {
+        "uname": "arif",
+        "password": "$2b$10$GWkYjK1SKGh7E5dZHdWoB.DTr0V/N47MtraNwrvkdyUj7WlKswkrm",
+        "ph_no": "+821234867896",
+        "email": "farmankttk@ciit-attock.edu.pk",
+        "age": 37,
+        "gender": "Male",
+        "u_beaconid": "38386436306336302d64666arif",
+        "otp": 64345,
+        "fname": "arif"
+    },
+
+
+    {
+        "uname": "asif",
+        "password": "$2b$10$GWkYjK1SKGh7E5dZHdWoB.DTr0V/N47MtraNwrvkdyUj7WlKswkrm",
+        "ph_no": "+821234867896",
+        "email": "farmankttk@ciit-attock.edu.pk",
+        "age": 37,
+        "gender": "Male",
+        "u_beaconid": "38386436306336302d64666asif",
+        "otp": 64345,
+        "fname": "asif"
+    },
+    {
+        "uname": "kamran",
+        "password": "$2b$10$GWkYjK1SKGh7E5dZHdWoB.DTr0V/N47MtraNwrvkdyUj7WlKswkrm",
+        "ph_no": "+821234867896",
+        "email": "farmankttk@ciit-attock.edu.pk",
+        "age": 37,
+        "gender": "Male",
+        "u_beaconid": "38386436306336302d64666kamran",
+        "otp": 64345,
+        "fname": "kamran"
+    },
+    {
+        "uname": "roqsar",
+        "password": "$2b$10$GWkYjK1SKGh7E5dZHdWoB.DTr0V/N47MtraNwrvkdyUj7WlKswkrm",
+        "ph_no": "+821234867896",
+        "email": "farmankttk@ciit-attock.edu.pk",
+        "age": 37,
+        "gender": "Male",
+        "u_beaconid": "38386436306336302d64666roqsar",
+        "otp": 64345,
+        "fname": "roqsar"
+    },
+    {
+        "uname": "hina",
+        "password": "$2b$10$GWkYjK1SKGh7E5dZHdWoB.DTr0V/N47MtraNwrvkdyUj7WlKswkrm",
+        "ph_no": "+821234867896",
+        "email": "farmankttk@ciit-attock.edu.pk",
+        "age": 37,
+        "gender": "female",
+        "u_beaconid": "38386436306336302d64666hina",
+        "otp": 64345,
+        "fname": "hina"
+    },
+
+    {
+        "uname": "bacha123",
+        "password": "$2b$10$GWkYjK1SKGh7E5dZHdWoB.DTr0V/N47MtraNwrvkdyUj7WlKswkrm",
+        "ph_no": "+821234867896",
+        "email": "farmankttk@ciit-attock.edu.pk",
+        "age": 37,
+        "gender": "Male",
+        "u_beaconid": "38386436306336302d64666bacha123",
+        "otp": 64345,
+        "fname": "bacha123"
+    },
+    {
+        "uname": "rashid",
+        "password": "$2b$10$GWkYjK1SKGh7E5dZHdWoB.DTr0V/N47MtraNwrvkdyUj7WlKswkrm",
+        "ph_no": "+821234867896",
+        "email": "farmankttk@ciit-attock.edu.pk",
+        "age": 37,
+        "gender": "Male",
+        "u_beaconid": "38386436306336302d64666rashid",
+        "otp": 64345,
+        "fname": "rashid"
+    },
+    {
+        "uname": "zubair",
+        "password": "$2b$10$GWkYjK1SKGh7E5dZHdWoB.DTr0V/N47MtraNwrvkdyUj7WlKswkrm",
+        "ph_no": "+821234867896",
+        "email": "farmankttk@ciit-attock.edu.pk",
+        "age": 37,
+        "gender": "Male",
+        "u_beaconid": "38386436306336302d64666zubair",
+        "otp": 64345,
+        "fname": "zubair"
+    },
+    {
+        "uname": "asad",
+        "password": "$2b$10$GWkYjK1SKGh7E5dZHdWoB.DTr0V/N47MtraNwrvkdyUj7WlKswkrm",
+        "ph_no": "+821234867896",
+        "email": "farmankttk@ciit-attock.edu.pk",
+        "age": 37,
+        "gender": "Male",
+        "u_beaconid": "38386436306336302d64666asad",
+        "otp": 64345,
+        "fname": "asad"
+    },
+    {
+        "uname": "tufail",
+        "password": "$2b$10$GWkYjK1SKGh7E5dZHdWoB.DTr0V/N47MtraNwrvkdyUj7WlKswkrm",
+        "ph_no": "+821234867896",
+        "email": "farmankttk@ciit-attock.edu.pk",
+        "age": 37,
+        "gender": "Male",
+        "u_beaconid": "38386436306336302d64666tufail",
+        "otp": 64345,
+        "fname": "tufail"
+    },
+    {
+        "uname": "sabir",
+        "password": "$2b$10$GWkYjK1SKGh7E5dZHdWoB.DTr0V/N47MtraNwrvkdyUj7WlKswkrm",
+        "ph_no": "+821234867896",
+        "email": "farmankttk@ciit-attock.edu.pk",
+        "age": 37,
+        "gender": "Male",
+        "u_beaconid": "38386436306336302d64666sabir",
+        "otp": 64345,
+        "fname": "sabir"
+    },
+    {
+        "uname": "shiraz",
+        "password": "$2b$10$GWkYjK1SKGh7E5dZHdWoB.DTr0V/N47MtraNwrvkdyUj7WlKswkrm",
+        "ph_no": "+821234867896",
+        "email": "farmankttk@ciit-attock.edu.pk",
+        "age": 37,
+        "gender": "Male",
+        "u_beaconid": "38386436306336302d64666shiraz",
+        "otp": 64345,
+        "fname": "shiraz"
+    },
+
+
+    {
+        "uname": "irfan",
+        "password": "$2b$10$GWkYjK1SKGh7E5dZHdWoB.DTr0V/N47MtraNwrvkdyUj7WlKswkrm",
+        "ph_no": "+821234867896",
+        "email": "farmankttk@ciit-attock.edu.pk",
+        "age": 37,
+        "gender": "Male",
+        "u_beaconid": "38386436306336302d64666irfan",
+        "otp": 64345,
+        "fname": "irfan"
+    },
+    {
+        "uname": "ziakhan",
+        "password": "$2b$10$GWkYjK1SKGh7E5dZHdWoB.DTr0V/N47MtraNwrvkdyUj7WlKswkrm",
+        "ph_no": "+821234867896",
+        "email": "farmankttk@ciit-attock.edu.pk",
+        "age": 37,
+        "gender": "Male",
+        "u_beaconid": "38386436306336302d64666ziakhan",
+        "otp": 64345,
+        "fname": "ziakhan"
+    },
+    {
+        "uname": "umair",
+        "password": "$2b$10$GWkYjK1SKGh7E5dZHdWoB.DTr0V/N47MtraNwrvkdyUj7WlKswkrm",
+        "ph_no": "+821234867896",
+        "email": "farmankttk@ciit-attock.edu.pk",
+        "age": 37,
+        "gender": "Male",
+        "u_beaconid": "38386436306336302d64666umair",
+        "otp": 64345,
+        "fname": "umair"
+    },
+    {
+        "uname": "najeeb",
+        "password": "$2b$10$GWkYjK1SKGh7E5dZHdWoB.DTr0V/N47MtraNwrvkdyUj7WlKswkrm",
+        "ph_no": "+821234867896",
+        "email": "farmankttk@ciit-attock.edu.pk",
+        "age": 37,
+        "gender": "Male",
+        "u_beaconid": "38386436306336302d64666najeeb",
+        "otp": 64345,
+        "fname": "najeeb"
+    }
+
+]

@@ -1,0 +1,203 @@
+[{
+        "uname": "furqan",
+        "date": "2021-07-08T00:00:00.000Z",
+        "time": "08:28:58",
+        "patient_beacon": "38386436306336302d646663362cc",
+        "hospital_uid": "0",
+        "status": "Normal"
+    },
+    {
+        "uname": "junaid45",
+        "date": "2021-07-08T00:00:00.000Z",
+        "time": "08:28:58",
+        "patient_beacon": "34366562376636302d653232382d3131j",
+        "hospital_uid": "0",
+        "status": "Normal"
+    },
+    {
+        "uname": "wasay123",
+        "date": "2021-07-11T00:00:00.000Z",
+        "time": "09:11:33",
+        "patient_beacon": "66626334396232302d653232372d3131a",
+        "hospital_uid": "0",
+        "status": "Normal"
+    },
+    {
+        "uname": "wasay123",
+        "date": "2021-07-11T00:00:00.000Z",
+        "time": "21:59:17",
+        "patient_beacon": "66626334396232302d653232372d3131a",
+        "hospital_uid": "ali",
+        "status": "Infected"
+    },
+    {
+        "uname": "khan",
+        "date": "2021-07-11T00:00:00.000Z",
+        "time": "21:59:17",
+        "patient_beacon": "38386436306336302d64666wer",
+        "hospital_uid": "ali",
+        "status": "Infected"
+    },
+    {
+        "uname": "islam",
+        "date": "2021-07-11T00:00:00.000Z",
+        "time": "21:59:17",
+        "patient_beacon": "38386436306336302d64666isl",
+        "hospital_uid": "ali",
+        "status": "Normal"
+    },
+    {
+        "uname": "babar",
+        "date": "2021-07-11T00:00:00.000Z",
+        "time": "21:59:17",
+        "patient_beacon": "38386436306336302d64666bab",
+        "hospital_uid": "ali",
+        "status": "Infected"
+    },
+    {
+        "uname": "aman",
+        "date": "2021-07-11T00:00:00.000Z",
+        "time": "21:59:17",
+        "patient_beacon": "38386436306336302d64666am",
+        "hospital_uid": "ali",
+        "status": "Normal"
+    },
+    {
+        "uname": "waqas",
+        "date": "2021-07-11T00:00:00.000Z",
+        "time": "21:59:17",
+        "patient_beacon": "38386436306336302d64666waqas",
+        "hospital_uid": "ali",
+        "status": "Normal"
+    },
+    {
+        "uname": "zaman",
+        "date": "2021-07-11T00:00:00.000Z",
+        "time": "21:59:17",
+        "patient_beacon": "38386436306336302d64666zaman",
+        "hospital_uid": "ali",
+        "status": "Normal"
+    },
+    {
+        "uname": "arif",
+        "date": "2021-07-11T00:00:00.000Z",
+        "time": "21:59:17",
+        "patient_beacon": "38386436306336302d64666arif",
+        "hospital_uid": "ali",
+        "status": "Normal"
+    },
+
+
+    {
+        "uname": "asif",
+        "date": "2021-07-11T00:00:00.000Z",
+        "time": "21:59:17",
+        "patient_beacon": "38386436306336302d64666asif",
+        "hospital_uid": "ali",
+        "status": "Normal"
+    },
+    {
+        "uname": "kamran",
+        "date": "2021-07-11T00:00:00.000Z",
+        "time": "21:59:17",
+        "patient_beacon": "38386436306336302d64666kamran",
+        "hospital_uid": "ali",
+        "status": "Normal"
+    },
+    {
+        "uname": "roqsar",
+        "date": "2021-07-11T00:00:00.000Z",
+        "time": "21:59:17",
+        "patient_beacon": "38386436306336302d64666roqsar",
+        "hospital_uid": "ali",
+        "status": "Normal"
+    },
+    {
+        "uname": "hina",
+        "date": "2021-07-11T00:00:00.000Z",
+        "time": "21:59:17",
+        "patient_beacon": "38386436306336302d64666hina",
+        "hospital_uid": "ali",
+        "status": "Normal"
+    },
+    {
+        "uname": "rashid",
+        "date": "2021-07-11T00:00:00.000Z",
+        "time": "21:59:17",
+        "patient_beacon": "38386436306336302d64666rashid",
+        "hospital_uid": "ali",
+        "status": "Normal"
+    },
+    {
+        "uname": "zubair",
+        "date": "2021-07-11T00:00:00.000Z",
+        "time": "21:59:17",
+        "patient_beacon": "38386436306336302d64666zubair",
+        "hospital_uid": "ali",
+        "status": "Normal"
+    },
+    {
+        "uname": "asad",
+        "date": "2021-07-11T00:00:00.000Z",
+        "time": "21:59:17",
+        "patient_beacon": "38386436306336302d64666asad",
+        "hospital_uid": "ali",
+        "status": "Normal"
+    },
+    {
+        "uname": "tufail",
+        "date": "2021-07-11T00:00:00.000Z",
+        "time": "21:59:17",
+        "patient_beacon": "38386436306336302d64666tufail",
+        "hospital_uid": "ali",
+        "status": "Normal"
+    },
+    {
+        "uname": "sabir",
+        "date": "2021-07-11T00:00:00.000Z",
+        "time": "21:59:17",
+        "patient_beacon": "38386436306336302d64666sabir",
+        "hospital_uid": "ali",
+        "status": "Normal"
+    }, {
+        "uname": "shiraz",
+        "date": "2021-07-11T00:00:00.000Z",
+        "time": "21:59:17",
+        "patient_beacon": "38386436306336302d64666shiraz",
+        "hospital_uid": "ali",
+        "status": "Normal"
+    },
+
+
+    {
+        "uname": "irfan",
+        "date": "2021-07-11T00:00:00.000Z",
+        "time": "21:59:17",
+        "patient_beacon": "38386436306336302d64666irfan",
+        "hospital_uid": "ali",
+        "status": "Normal"
+    },
+    {
+        "uname": "ziakhan",
+        "date": "2021-07-11T00:00:00.000Z",
+        "time": "21:59:17",
+        "patient_beacon": "38386436306336302d64666ziakhan",
+        "hospital_uid": "ali",
+        "status": "Normal"
+    },
+    {
+        "uname": "umair",
+        "date": "2021-07-11T00:00:00.000Z",
+        "time": "21:59:17",
+        "patient_beacon": "38386436306336302d64666umair",
+        "hospital_uid": "ali",
+        "status": "Normal"
+    }, {
+        "uname": "najeeb",
+        "date": "2021-07-11T00:00:00.000Z",
+        "time": "21:59:17",
+        "patient_beacon": "38386436306336302d64666najeeb",
+        "hospital_uid": "ali",
+        "status": "Normal"
+    }
+]
