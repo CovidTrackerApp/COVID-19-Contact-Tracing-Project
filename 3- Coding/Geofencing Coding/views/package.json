@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "csv-parser": "^3.0.0",
+    "treeflex": "^2.0.1"
+  }
+}

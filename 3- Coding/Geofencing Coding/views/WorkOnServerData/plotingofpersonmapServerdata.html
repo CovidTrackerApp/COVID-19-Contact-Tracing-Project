@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>region Based Map</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+  <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js" type="text/javascript" charset="utf-8"></script>
+  <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js" type="text/javascript" charset="utf-8"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <style type="text/css">
+    /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+    #map {
+      height: 70%;
+    }
+
+    /* Optional: Makes the sample page fill the window. */
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+
+  <script>
+    
+
+  var SeriousRegions = [
+      { lng: 126.865169, lat: 37.599379 },
+      { lng: 126.871695, lat: 37.604026 },
+      { lng: 126.848110, lat: 37.614038 },
+      { lng: 126.837789, lat: 37.614930 },
+  ];
+
+  
+    var numberofUsers = [];
+function d(){    
+    for (var i = 0; i < Object.keys(ServerTotalUserSensorsDataLat).length; i++) { 
+      numberofUsers[i] = [i];
+    }
+}
+function calcCrow(lat1, lon1, lat2, lon2) {
+      var R = 6371; // km
+      var dLat = toRad(lat2 - lat1);
+      var dLon = toRad(lon2 - lon1);
+      var lat1 = toRad(lat1);
+      var lat2 = toRad(lat2);
+
+      var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      var d = R * c;
+      return d;
+    }
+
+    // Converts numeric degrees to radians
+    function toRad(Value) {
+      return Value * Math.PI / 180;
+    }
+
+var ServerTotalUserSensorsDataLat1 = {};
+var ServerTotalUserSensorsDataLon1 = {};
+
+var ServerTotalUserSensorsDataLat = {};
+var ServerTotalUserSensorsDataLon = {};
+function onlyUnique(value, index, self) {
+  return self.indexOf(value) === index;
+}
+    async function initMap() {
+      const responseofUserReg = await fetch('http://52.74.221.135:5000/users');
+      var responseofUserRegData = await responseofUserReg.json();
+
+
+      const responseofSsensorData = await fetch('http://52.74.221.135:5000/sensor_data_for_bacha');
+      var responseofSsensorDataTable = await responseofSsensorData.json();
+
+      var u=0;
+     
+      for(let user of responseofUserRegData){
+       
+        var userLat = (`user_${u}`);
+        userLat = [];
+        var userLon = (`user_${u}`);
+        userLon = [];
+        for(let latlon of responseofSsensorDataTable){
+          if(user.uname === latlon.uname){
+           // ServerTotalUserSensorsData.user0.push(latlon.lat);
+        //   console.log(latlon.lat);
+           userLat.push(Number(latlon.lat));
+           userLon.push(Number(latlon.long));
+          }
+          
+          
+        }
+        ServerTotalUserSensorsDataLat['user_'+u]=userLat;
+        ServerTotalUserSensorsDataLon['user_'+u]=userLon;
+        u++;
+      }
+      
+
+console.log(ServerTotalUserSensorsDataLat);
+
+        d();
+
+      const map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 18,
+        center: { lat: 37.600795, lng: 126.864614 },
+
+        mapTypeId: "satellite",
+        // mapTypeId: "terrain",
+      });
+
+
+      ///////////////////////////////////////// GPS Based ///////////////////////////////////////
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+        //  console.log("GPS based Location ");
+          //console.log(position.coords);
+
+      //    console.log("Latitude: " + position.coords.latitude);
+       //   console.log("Longitude: " + position.coords.longitude);
+      //    console.log("Altitude: " + position.coords.altitude);
+       //   console.log("Speed: " + position.coords.speed);
+        //  console.log("Accuracy: " + position.coords.accuracy);
+        });
+      } else {
+    //    console.error("Geolocation is not supported by this browser!");
+      }
+      ///////////////////////////////////////// GPS Based ///////////////////////////////////////
+
+      ///////////////////////////////////////// IP Based ///////////////////////////////////////
+      fetch('https://extreme-ip-lookup.com/json/')
+        .then(res => res.json())
+        .then(response => {
+       //   console.log("\nIP Base Location")
+       //   console.log("Country: ", response.country);
+
+       //   console.log("Latitude: ", response.lat);
+        //  console.log("Longitude: ", response.lng);
+        //  console.log("City Name: ", response.cityCircle);
+
+        }).catch((data, status) => {
+        //  console.log('Request failed');
+        })
+
+      ///////////////////////////////////////// IP Based ///////////////////////////////////////
+
+      
+
+
+
+      var distofUserfromRegion;
+
+      for (var k = 0; k < (Object.keys(SeriousRegions).length); k = k + 1) {
+        
+        var regLat = SeriousRegions[k].lat
+        var regLon = SeriousRegions[k].lng
+        
+        for(var i=0; i < (Object.keys(ServerTotalUserSensorsDataLat).length); i = i + 1 ){
+          var userLati = (`user_${i}`);
+          var userLoni = (`user_${i}`);
+          var lati = ServerTotalUserSensorsDataLat[userLati];
+          var latii = lati.filter(onlyUnique);
+          var longi = ServerTotalUserSensorsDataLon[userLoni];
+          var longii = longi.filter(onlyUnique);
+          for (var j=0; j < (Object.keys(latii).length); j = j + 1 ) {
+              
+            distofUserfromRegion = calcCrow(latii[j], longii[j], regLat, regLon).toFixed(5);
+            console.log("Distance of "+ userLati +" is " + distofUserfromRegion + " km from region " + k);
+            if(distofUserfromRegion <= 0.15){
+              console.log("You are enter in a red alert region so take care of yourself ");
+            }
+          }
+          console.log("User Complete");
+        }
+        console.log("\n\n\nRegion Complete");
+      }
+
+var icn=0;
+      var colors = ["yellow", "green", "blue", "red"];
+      for (const lat of numberofUsers) {
+          console.log(numberofUsers.length + '  Total Patients ' + lat)
+        //console.log(`user_${ lat }`);
+        var userLat = (`user_${lat}`);
+        var userLon = (`user_${lat}`);
+        var lol = ServerTotalUserSensorsDataLat[userLat];
+        var lati = lol.filter(onlyUnique);
+        var lol2 = ServerTotalUserSensorsDataLon[userLon];
+        var long = lol2.filter(onlyUnique);
+        let url = "http://maps.google.com/mapfiles/ms/icons/";
+        if(lati.length>0){
+           // console.log("size of this guy is " + lati.length);
+        url += colors[Number(icn)] + "-dot.png"
+        icn++;
+        }
+        
+
+        for (const i in lati) {
+
+        //   console.log(lati[i],long[i]);
+          // console.log(long[i]);
+          const cityCircle = new google.maps.Circle({
+            strokeColor: "#000000",
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: "#000000",
+            fillOpacity: 0.35,
+            map,
+            center: { lat: lati[i], lng: long[i] },
+            radius: 2,
+            //radius: Math.sqrt(citymap[city].population) * 100,
+          });
+
+          const marker = new google.maps.Marker({
+
+            position: { lat: lati[i], lng: long[i] },
+            map: map,
+            icon: { url: url }
+            // icon: "https://img.icons8.com/nolan/2x/marker.png"
+          });
+         // console.log(url);
+        }
+
+      }
+
+var UserLocations=[];
+
+for(var i=0; i < (Object.keys(ServerTotalUserSensorsDataLat).length); i = i + 1 ){
+          var userLati = (`user_${i}`);
+          var userLoni = (`user_${i}`);
+          var lati = ServerTotalUserSensorsDataLat[userLati];
+          var latii = lati.filter(onlyUnique);
+          var longi = ServerTotalUserSensorsDataLon[userLoni];
+          var longii = longi.filter(onlyUnique);
+          for (var j=0; j < (Object.keys(latii).length); j = j + 1 ) {
+            UserLocations.push({ lng: longii[j], lat: latii[j] });
+            
+          }
+         
+
+        //   var poll = new google.maps.Polygon({
+        //   paths: UserLocations,
+        //   strokeColor: '#FFFFFF',
+        // //  strokeOpacity: 0.0,
+        //   strokeWeight: 0.8,
+        // //  fillColor: '#FF0000',
+        //   fillOpacity: 0,
+        //   map: map,
+        // });
+
+
+//         const flightPath = new google.maps.Polyline({
+//     path: UserLocations,
+//     geodesic: true,
+//     strokeColor: "#FF0000",
+//     strokeOpacity: 1.0,
+//     strokeWeight: 2,
+//   });
+//   flightPath.setMap(map);
+
+const lineSymbol = {
+    path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+  };
+  
+const line = new google.maps.Polyline({
+    path: UserLocations,
+    icons: [
+      {
+        icon: lineSymbol,
+        offset: "100%",
+      },
+    ],
+    map: map,
+  });
+        UserLocations = [];
+
+        }
+
+for (const i in SeriousRegions){
+const cityCircle = new google.maps.Circle({
+            strokeColor: "#FF0000",
+            strokeOpacity: 0.8,
+            strokeWeight: 1,
+            fillColor: "#FF0000",
+            fillOpacity: 0.1,
+            map,
+            center: { lat: SeriousRegions[i].lat, lng: SeriousRegions[i].lng },
+            radius: 150,  // meter
+            //radius: Math.sqrt(citymap[city].population) * 100,
+          });
+          }
+
+    }
+
+
+  </script>
+
+</head>
+
+<body>
+  <div id="map"></div>
+  <div id="demo"></div>
+
+  <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=&callback=initMap&libraries=&v=weekly" async></script>
+</body>
+
+</html>

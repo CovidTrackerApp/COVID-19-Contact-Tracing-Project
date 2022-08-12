@@ -1,0 +1,69 @@
+[
+    {
+        "uname": "junaid45",
+        "password": "$2b$10$SGjM0ZbO7/wwOw4OhvseYOOrCwDE40NyXttX4kG2z/Ym55NtgE0aG",
+        "ph_no": "+821234567891",
+        "email": "dianujkotov15@gmail.com",
+        "age": 23,
+        "gender": "Male",
+        "u_beaconid": "34366562376636302d653232382d3131",
+        "otp": 40088,
+        "fname": "Junaid Khan"
+    },
+    {
+        "uname": "wasay123",
+        "password": "$2b$10$Wpe.A8Xg2bWwX9Nq9uishev.PaBzXBNhPfHJkqMhD/w8mFiIZx83.",
+        "ph_no": "+820121880131",
+        "email": "wasay@kau.kr",
+        "age": 24,
+        "gender": "Male",
+        "u_beaconid": "66626334396232302d653232372d3131",
+        "otp": 15519,
+        "fname": "Abdul Wasay Sardar"
+    },
+
+    {
+        "uname": "farman123",
+        "password": "$2b$10$GWkYjK1SKGh7E5dZHdWoB.DTr0V/N47MtraNwrvkdyUj7WlKswkrm",
+        "ph_no": "+821234867896",
+        "email": "farmankttk@ciit-attock.edu.pk",
+        "age": 37,
+        "gender": "Male",
+        "u_beaconid": "33313736346535302d653063382d313165622d393233342d3262316336646232",
+        "otp": 64345,
+        "fname": "Farman Ullah"
+    },
+    {
+        "uname": "jamshaid12",
+        "password": "$2b$10$AvBPdxpvq.zrRp4uWt8EhuviFqWUYgl4883nA3vicpWeTJw.jvfMm",
+        "ph_no": "+821234567892",
+        "email": "dianujkotov1997@gmail.com",
+        "age": 23,
+        "gender": "Male",
+        "u_beaconid": "62636364366137302d653234642d3131",
+        "otp": 61765,
+        "fname": "Jamshaid Bacha"
+    },
+    {
+        "uname": "furqan",
+        "password": "$2b$10$llGY3IaVF1lXCqDC7D5oCuhSp0N0pq2P3Txr4iZyGt/VYAKIGB35m",
+        "ph_no": "03758555669",
+        "email": "furqan.ali9500@gmail.com",
+        "age": 22,
+        "gender": "Male",
+        "u_beaconid": "3689643365666aa02d653362752d3131",
+        "otp": 15203,
+        "fname": "Furqan ali"
+    },
+    {
+        "uname": "bacha123",
+        "password": "$2b$10$llGY3IaVF1lXCqDC7D5oCuhSp0N0pq2P3Txr4iZyGt/VYAKIGB35m",
+        "ph_no": "03758555669",
+        "email": "furqan.ali9500@gmail.com",
+        "age": 22,
+        "gender": "Male",
+        "u_beaconid": "3689643365666aa02d653362752d3131",
+        "otp": 15203,
+        "fname": "Furqan ali"
+    }
+]

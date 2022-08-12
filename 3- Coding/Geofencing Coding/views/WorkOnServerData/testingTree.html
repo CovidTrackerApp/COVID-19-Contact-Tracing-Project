@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Coding Train: Data and APIs Project 1</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
+
+  <!-- <link rel="stylesheet" href="./css/main.css"> -->
+  <style>
+    .node {
+      cursor: pointer;
+    }
+
+    .node circle {
+      fill: #fff;
+      stroke: steelblue;
+      stroke-width: 3px;
+    }
+
+    .node text {
+      font: 12px sans-serif;
+    }
+
+    .link {
+      fill: none;
+      stroke: #ccc;
+      stroke-width: 2px;
+    }
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
+
+</head>
+
+<body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <div id="chart_0"></div>
+
+  <script>
+
+    getData();
+
+
+    function calcCrow(lat1, lon1, lat2, lon2) {
+      var R = 6371; // km
+      var dLat = toRad(lat2 - lat1);
+      var dLon = toRad(lon2 - lon1);
+      var lat1 = toRad(lat1);
+      var lat2 = toRad(lat2);
+
+      var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      var d = R * c;
+      return d;
+    }
+    function toRad(Value) {
+      return Value * Math.PI / 180;
+    }
+    function onlyUnique(value, index, self) {
+      return self.indexOf(value) === index;
+    }
+
+    var arrayofallusers = [];
+    var columns;
+    var userid = [];
+    var useridinterctwith = [];
+    var user_profile = {};
+    var numbeofArr = {};
+
+
+
+
+    var TotalPatientSensorsDataLat = {};
+    var TotalPatientSensorsDataLon = {};
+
+    var TotalUserSensorsDataLat = {};
+    var TotalUserSensorsDataLon = {};
+
+    async function getData() {
+
+
+      const regUsers = await fetch('regUsers.json');
+      var regUsersData = await regUsers.json();
+
+      const UsersStatus = await fetch('userstatus.json');
+      var UsersStatusData = await UsersStatus.json();
+
+      var totalPatient = [];
+      var totalUsers = [];
+      for (let user of regUsersData) {
+        var patientt = '';
+        for (let patient of UsersStatusData) {
+          if (user.uname === patient.uname) {
+            if (patient.status === 'Infected') {
+              patientt = patient.status;
+
+            } else {
+              patientt = patient.status;
+            }
+          }
+        }
+        if (patientt === 'Infected') {
+          totalPatient.push(user.uname);
+        } else {
+          totalUsers.push(user.uname);
+        }
+      }
+      console.log("Total Infected People\n");
+      console.log(totalPatient);
+
+      const PatientTraces = await fetch('latlongdata.json');
+      var PatientTracesData = await PatientTraces.json();
+
+      for (i in totalPatient) {
+        var patientLat = (`${totalPatient[i]}`);
+        patientLat = [];
+        var patientLon = (`${totalPatient[i]}`);
+        patientLon = [];
+        for (let ltln of PatientTracesData) {
+          if (totalPatient[i] === ltln.uname) {
+            patientLat.push(Number(ltln.lat));
+            patientLon.push(Number(ltln.long));
+          }
+        }
+        TotalPatientSensorsDataLat[`${totalPatient[i]}`] = patientLat;
+        TotalPatientSensorsDataLon[`${totalPatient[i]}`] = patientLon;
+
+      }
+      // console.log(totalPatient[1])
+      // var userLon = (`${totalPatient[1]}`);
+      // console.log(userLon)
+      // var lat = TotalPatientSensorsDataLat[userLon];
+      console.log("Total Infected People Traces\n");
+      console.log(TotalPatientSensorsDataLat, TotalPatientSensorsDataLon);
+
+
+
+      // for(let user of regUsersData){
+      //     var normalUsers='';
+      //     for(let userStatus of UsersStatusData){ 
+      //         if(user.uname===userStatus.uname){
+      //             if(userStatus.status==='Normal'){
+      //                 normalUsers=userStatus.status;
+      //             }else{
+      //                 normalUsers=userStatus.status;
+      //             }
+      //         }
+      //     }
+      //     if(normalUsers==='Normal'){
+      //         totalUsers.push(user.uname);
+      //     }
+      // }
+
+      console.log("Total Normal People \n");
+      console.log(totalUsers);
+      for (i in totalUsers) {
+        var userLat = (`${totalUsers[i]}`);
+        userLat = [];
+        var userLon = (`${totalUsers[i]}`);
+        userLon = [];
+        for (let ltln of PatientTracesData) {
+          if (totalUsers[i] === ltln.uname) {
+            userLat.push(Number(ltln.lat));
+            userLon.push(Number(ltln.long));
+          }
+        }
+        TotalUserSensorsDataLat[`${totalUsers[i]}`] = userLat;
+        TotalUserSensorsDataLon[`${totalUsers[i]}`] = userLon;
+      }
+      console.log("Total Normal People Traces\n");
+      console.log(TotalUserSensorsDataLat, TotalUserSensorsDataLon);
+      var listArray = [];
+      var friends = [];
+
+
+
+
+
+      var distofUserfromPatient = 0;
+      var linefromPatient = [];
+
+      for (var i = 0; i < (Object.keys(totalPatient).length); i++) {
+        
+
+        var patientLat = (`${totalPatient[i]}`);
+        var Plat = TotalPatientSensorsDataLat[patientLat];
+        var patientLon = (`${totalPatient[i]}`);
+        var Plon = TotalPatientSensorsDataLon[patientLon];
+
+        listArray.push({ 'name': totalPatient[i], 'parent': null },);
+
+        for (var j = 0; j < (Object.keys(totalUsers).length); j++) {
+
+          var userLat = (`${totalUsers[j]}`);
+          var Ulat = TotalUserSensorsDataLat[userLat];
+          var userLon = (`${totalUsers[j]}`);
+          var Ulon = TotalUserSensorsDataLon[userLon];
+
+
+
+          var sizeofLatLon = 0;
+          if (Ulat.length < Plat.length) {
+            sizeofLatLon = Ulat.length;
+          } else {
+            sizeofLatLon = Plat.length;
+          }
+
+          if (!(sizeofLatLon == 0)) {
+
+            // console.log(userLat, Ulat, userLon, Ulon);
+            // console.log(patientLat, Plat, patientLon, Plon);
+            var flog = 1;
+            var fleeg = 0 ;
+            for (var k = 0; k < sizeofLatLon; k++) {
+              distofUserfromPatient = calcCrow(Plat[k], Plon[k], Ulat[k], Ulon[k]).toFixed(5);
+              if (flog == 1) {
+
+                if ((distofUserfromPatient < 1)) {
+
+                  for (ll in listArray) {
+                    if ((listArray[ll].parent === totalUsers[j])) {
+                      fleeg=1;
+                    }
+                  }
+
+                  if(fleeg==0){
+                  console.log("Found friend: " + totalUsers[j] + " of " + totalPatient[i] + " with distance " + distofUserfromPatient);
+                  listArray.push({ 'name': totalUsers[j], 'parent':  totalPatient[i] },);
+                  friends.push(totalUsers[j]);
+                  flog = 0;
+                  }
+                  
+
+                }
+              }
+
+            }
+          }
+        }
+
+
+
+
+
+        p2 = [];
+        p22 = [];
+        for (var layer = 0; layer < 1; layer++) { // deciding number of layers
+          for (var f in friends) {
+            p2.push(friends[f]);
+          }
+          // console.log(p2);
+          p22 = p2.filter(onlyUnique);
+          console.log(p22);
+          friends = [];
+          for (var ii = 0; ii < (Object.keys(p22).length); ii++) {
+
+
+            var fpatientLat = (`${p22[ii]}`);
+            var fPlat = TotalUserSensorsDataLat[fpatientLat];
+            var fpatientLon = (`${p22[ii]}`);
+            var fPlon = TotalUserSensorsDataLon[fpatientLon];
+
+
+            for (var jj = 0; jj < (Object.keys(totalUsers).length); jj++) {
+
+
+
+              var ffpatientLat = (`${totalUsers[jj]}`);
+              var ffPlat = TotalUserSensorsDataLat[ffpatientLat];
+              var ffpatientLon = (`${totalUsers[jj]}`);
+              var ffPlon = TotalUserSensorsDataLon[ffpatientLon];
+
+              console.log(ii + ' ' + `${p22[ii]}` + ' ' + `${totalUsers[jj]}`);
+
+              var sizeofLatLon = 0;
+              if (ffPlat.length < fPlat.length) {
+                sizeofLatLon = ffPlat.length;
+              } else {
+                sizeofLatLon = fPlat.length;
+              }
+
+              if (!(fpatientLat === ffpatientLat)) {
+                if (!(sizeofLatLon == 0)) {
+
+                  var flag = 1;
+                  var fleeeg=0;
+                  for (var k = 0; k < sizeofLatLon; k++) {
+                    distofUserfromPatient = calcCrow(fPlat[k], fPlon[k], ffPlat[k], ffPlon[k]).toFixed(5);
+                    if (flag == 1) {
+                      if ((distofUserfromPatient < 2)) {
+
+                        for (lo in listArray) {
+                    if ((listArray[lo].parent === totalUsers[jj])) {
+                      fleeeg=1;
+                    }
+                  }
+
+                if(fleeeg==0){
+                        console.log("Found friend: " + totalUsers[jj] + " of " + p22[ii] + " with distance " + distofUserfromPatient);
+                        listArray.push({ 'name': totalUsers[jj], 'parent': p22[ii] },);
+                        friends.push(totalUsers[jj]);
+                        flag = 0;
+                }
+
+
+                      }
+                    }
+
+                  }
+                }
+              }
+
+              // if(!(fpatientLat===ffpatientLat)){
+              //   console.log("Aya Bhai");
+              //   console.log(fpatientLat, fPlat, fpatientLon, fPlon);
+              //   console.log(ffpatientLat, ffPlat, ffpatientLon, ffPlon);
+
+              //   listArray.push({ 'name': totalUsers[jj], 'parent': p22[ii] },);
+              //   friends.push(totalUsers[jj]);
+              // }
+
+
+              // if (p2[ll] == myBeaconId[nuberifuser]) {
+              //   listArray.push({ 'name': otherBeaconUserName[nuberifuser], 'parent': p2[ll] },);
+
+              //   friends.push(otherBeaconUserName[nuberifuser]);
+              // }
+
+            }
+
+
+          }
+          p2 = [];
+          p22 = [];
+        }
+
+        // const result = Array.from(new Set(listArray.map(s => s.name)))
+        //   .map(name => {
+        //     return {
+        //       name: name,
+        //       parent: listArray.find(s => s.name === name).parent
+        //     };
+        //   });
+        // treeploting(result, totalPatient[i]);
+        // listArray = [];
+
+
+        //console.log(listArray);
+        const result = [];
+        const map = new Map();
+        for (const item of listArray) {
+          if (!map.has(item.name)) {
+            map.set(item.name, true);    // set any value to Map
+            result.push({
+              name: item.name,
+              parent: item.parent
+            });
+          }
+        }
+        treeploting(listArray, totalPatient[i]);
+
+        listArray = [];
+      }
+
+
+    }
+
+
+
+    var w = 150;
+    var l = 80;
+    function treeploting(arr, pateint) {
+      // arr.push({name: "jamshaid12", parent: "bacha123"});
+      console.log(arr);
+      var dataa = [];
+      // for (i in arr) {
+      //   if (!(arr[i].name === pateint)) {
+      //     dataa.push(arr[i]);
+      //     console.log(arr[i]);
+      //   }
+      // }
+
+
+
+
+      const nest = (items, name = null, link = 'parent') =>
+        items
+          .filter(item => item[link] === name)
+          .map(item => ({ ...item, children: nest(items, item.name) }));
+      // console.log(arr.length);
+      // set the dimensions and margins of the diagram
+
+      var margin = { top: 40, right: 40, bottom: 50, left: 90 },
+        width = 600 - margin.left - margin.right,
+        height = 600 - margin.top - margin.bottom;
+
+
+
+      // declares a tree layout and assigns the size
+      var treemap = d3.tree()
+        .size([width, height]);
+
+      //  assigns the data to a hierarchy using parent-child relationships
+
+
+      var nodes = d3.hierarchy(nest(arr)[0]);
+
+      // maps the node data to the tree layout
+      nodes = treemap(nodes);
+
+      // append the svg obgect to the body of the page
+      // appends a 'group' element to 'svg'
+      // moves the 'group' element to the top left margin
+      var svg = d3.select("body").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom),
+        g = svg.append("g")
+          .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
+
+      // adds the links between the nodes
+      var link = g.selectAll(".link")
+        .data(nodes.descendants().slice(1))
+        .enter().append("path")
+        .attr("class", "link")
+        .attr("d", function (d) {
+          return "M" + d.x + "," + d.y
+            + "C" + d.x + "," + (d.y + d.parent.y) / 2
+            + " " + d.parent.x + "," + (d.y + d.parent.y) / 2
+            + " " + d.parent.x + "," + d.parent.y;
+        });
+
+      // adds each node as a group
+      var node = g.selectAll(".node")
+        .data(nodes.descendants())
+        .enter().append("g")
+        .attr("class", function (d) {
+          return "node" +
+            (d.children ? " node--internal" : " node--leaf");
+        })
+        .attr("transform", function (d) {
+          return "translate(" + d.x + "," + d.y + ")";
+        });
+
+      // adds the circle to the node
+      node.append("circle")
+        .attr("r", 10);
+
+      // adds the text to the node
+      node.append("text")
+        .attr("dy", ".35em")
+        .attr("y", function (d) { return d.children ? -20 : 20; })
+        .style("text-anchor", "middle")
+        .text(function (d) { return d.data.name; });
+
+      //     const nest = (items, name = null, link = 'parent') =>
+      //   items
+      //     .filter(item => item[link] === name)
+      //     .map(item => ({ ...item, children: nest(items, item.name) }));
+
+
+      // // ************** Generate the tree diagram	 *****************
+      // var margin = {top: 20, right: 120, bottom: 20, left: 120},
+      // 	width = 200*arr.length - margin.right - margin.left,
+      // 	height = 40*arr.length - margin.top - margin.bottom;
+
+      //     var i = 0,
+      // 	duration = 750,
+      // 	root;
+
+      // var tree = d3.layout.tree()
+      // 	.size([height, width]);
+
+      // var diagonal = d3.svg.diagonal()
+      // 	.projection(function(d) { return [d.y, d.x]; });
+
+
+      // var svg = d3.select("#chart_0").append("svg")
+      // 	.attr("width", width + margin.right + margin.left)
+      // 	.attr("height", height + margin.top + margin.bottom)
+      //   .append("g")
+      // 	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      // root = nest(arr)[0];
+      // root.x0 = height / 2;
+      // root.y0 = 0;
+      // update(root);
+      // d3.select(self.frameElement).style("height", "500px");
+
+
+      // function update(source) {
+
+      //   // Compute the new tree layout.
+      //   var nodes = tree.nodes(root).reverse(),
+      // 	  links = tree.links(nodes);
+
+      //   // Normalize for fixed-depth.
+      //   nodes.forEach(function(d) { d.y = d.depth * 180; });
+
+      //   // Update the nodes…
+      //   var node = svg.selectAll("g.node")
+      // 	  .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+      //   // Enter any new nodes at the parent's previous position.
+      //   var nodeEnter = node.enter().append("g")
+      // 	  .attr("class", "node")
+      // 	  .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+      // 	  .on("click", click);
+
+      //   nodeEnter.append("circle")
+      // 	  .attr("r", 1e-6)
+      // 	  .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+      //   nodeEnter.append("text")
+      // 	  .attr("x", function(d) { return d.children || d._children ? -13 : 13; })
+      // 	  .attr("dy", ".35em")
+      // 	  .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+      // 	  .text(function(d) { return d.name; })
+      // 	  .style("fill-opacity", 1e-6);
+
+      //   // Transition nodes to their new position.
+      //   var nodeUpdate = node.transition()
+      // 	  .duration(duration)
+      // 	  .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+      //   nodeUpdate.select("circle")
+      // 	  .attr("r", 10)
+      // 	  .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+      //   nodeUpdate.select("text")
+      // 	  .style("fill-opacity", 1);
+
+      //   // Transition exiting nodes to the parent's new position.
+      //   var nodeExit = node.exit().transition()
+      // 	  .duration(duration)
+      // 	  .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+      // 	  .remove();
+
+      //   nodeExit.select("circle")
+      // 	  .attr("r", 1e-6);
+
+      //   nodeExit.select("text")
+      // 	  .style("fill-opacity", 1e-6);
+
+      //   // Update the links…
+      //   var link = svg.selectAll("path.link")
+      // 	  .data(links, function(d) { return d.target.id; });
+
+      //   // Enter any new links at the parent's previous position.
+      //   link.enter().insert("path", "g")
+      // 	  .attr("class", "link")
+      // 	  .attr("d", function(d) {
+      // 		var o = {x: source.x0, y: source.y0};
+      // 		return diagonal({source: o, target: o});
+      // 	  });
+
+      //   // Transition links to their new position.
+      //   link.transition()
+      // 	  .duration(duration)
+      // 	  .attr("d", diagonal);
+
+      //   // Transition exiting nodes to the parent's new position.
+      //   link.exit().transition()
+      // 	  .duration(duration)
+      // 	  .attr("d", function(d) {
+      // 		var o = {x: source.x, y: source.y};
+      // 		return diagonal({source: o, target: o});
+      // 	  })
+      // 	  .remove();
+
+      //   // Stash the old positions for transition.
+      //   nodes.forEach(function(d) {
+      // 	d.x0 = d.x;
+      // 	d.y0 = d.y;
+      //   });
+      // }
+
+      // // Toggle children on click.
+      // function click(d) {
+      //   if (d.children) {
+      // 	d._children = d.children;
+      // 	d.children = null;
+      //   } else {
+      // 	d.children = d._children;
+      // 	d._children = null;
+      //   }
+      //   update(d);
+      // }  
+
+    }
+
+  </script>
+</body>
+
+</html>

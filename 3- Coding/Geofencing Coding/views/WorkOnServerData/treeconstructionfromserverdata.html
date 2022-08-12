@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Coding Train: Data and APIs Project 1</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
+
+ <!-- <link rel="stylesheet" href="./css/main.css"> -->
+<style>
+
+.node {
+		cursor: pointer;
+	}
+
+	.node circle {
+	  fill: #fff;
+	  stroke: steelblue;
+	  stroke-width: 3px;
+	}
+
+	.node text {
+	  font: 12px sans-serif;
+	}
+
+	.link {
+	  fill: none;
+	  stroke: #ccc;
+	  stroke-width: 2px;
+	}
+
+
+</style>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
+
+  </head>
+
+  <body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <div id="chart_0"></div>
+
+    <script>
+
+   getData();
+
+   var arrayofallusers=[];
+   var columns;
+   var userid=[];
+   var useridinterctwith=[];
+   var user_profile = {};
+   
+   var numbeofArr={};
+
+   async function getData(){
+
+     var totalPatient=[];
+     
+     var totalPatientUsername=[];
+    const responseofStatustable = await fetch('http://52.74.221.135:5000/users_status/all');
+    var responseofStatustableData = await responseofStatustable.json();
+
+
+
+    const AllregUsers = await fetch('http://52.74.221.135:5000/users');
+    var AllregUsersData = await AllregUsers.json();
+
+    for(let username of AllregUsersData){
+      var patientI = '';
+      var patientUsername = '';
+      var statu = '';
+      for(let state of responseofStatustableData){
+        if(state.status==='Infected' && username.uname===state.uname){
+          patientI = state.patient_beacon;
+          patientUsername = state.uname;
+          statu = state.status;
+        }
+        if(state.status==='Normal' && username.uname===state.uname){
+          patientI = state.patient_beacon;
+          patientUsername = state.uname;
+          statu = state.status;
+        }
+      }
+      if((!(patientI==='')  && (statu==='Infected'))){
+          totalPatient.push(patientI);
+          totalPatientUsername.push(patientUsername)
+      } 
+    }
+
+    console.log("Patients " + totalPatient);
+    var myBeaconId=[];
+    var otherBeaconId=[];
+    const contactsofallUsers = await fetch('http://52.74.221.135:5000/beacon_data/bacha');
+    var contactsofallUsersData = await contactsofallUsers.json();
+    var a=0;
+    for(let users of contactsofallUsersData){
+     
+      myBeaconId.push(users.u_beaconid);
+      otherBeaconId.push(users.beaconid_others);
+      a++;
+    }
+
+    var myBeaconUserName=[];
+    var otherBeaconUserName=[];
+
+   // console.log(myBeaconId);
+  //  console.log(otherBeaconId);
+
+    for(var zom in myBeaconId){
+      var U='';
+      var U2='';
+      for(let username of AllregUsersData){
+        if(myBeaconId[zom]===username.u_beaconid){
+          U = username.uname;
+      }
+      if(otherBeaconId[zom]===username.u_beaconid){
+        U2 = username.uname;
+        
+      }
+    }
+    if(!(U==='')){
+      myBeaconUserName.push(U);
+    }
+    if(!(U2==='')){
+      otherBeaconUserName.push(U2);
+    }
+
+    }
+    
+
+
+
+
+
+  //    const response = await fetch('usersdata.csv');
+  //    const data = await response.text();
+  //  //  console.log(data);
+  //    var personID=0;
+  //    var personID2=0;
+  //    const table = data.split('\n').slice(1);
+  //    var tobecont=100000000;
+  //    table.forEach(row=>{
+  //       columns = row.split(',');
+  //       userid.push(columns[0]) ;
+  //       useridinterctwith.push(columns[1]);
+        
+  //    })
+     
+    //  var p1=[1,3,444,10]; //Let we have Four Patient 
+     var friends=[];
+     var friendsoffriends=[];
+
+      
+    var listArray=[];
+  
+for(var zee in totalPatient){
+  // if(zee==1){
+  //   break;
+  // }
+  var str ="arr_"+ 0+" = undefined";
+  numbeofArr["str"] = [];
+ // console.log(numbeofArr.str);
+ // numbeofArr.str.push({'name': 'Patient ' + Number(p1[zee]),'parent': null},);
+//   console.log(numbeofArr.str);
+  listArray.push({'name':'Patient ' + totalPatientUsername[zee],'parent': null},);
+
+       for(var nuberifuser in myBeaconId){
+         if(totalPatient[zee] === myBeaconId[nuberifuser]){
+         //  console.log('found friends of patient ',totalPatient[zee],Number(useridinterctwith[nuberifuser]));
+          listArray.push({'name':otherBeaconUserName[nuberifuser] ,'parent':'Patient ' +  totalPatientUsername[zee]},);
+          // numbeofArr.str.push({'name':Number(useridinterctwith[nuberifuser]) ,'parent':'Patient ' +  Number(p1[zee])},);
+          // thisdataaaa["links"].push({"id":`${Number(tobecont)}`, "from": `${Number(p1[zee])}`, "to":`${Number(useridinterctwith[nuberifuser])}`, "type":"friend"});
+          // tobecont++;
+          friends.push(otherBeaconUserName[nuberifuser]);
+          }
+        }
+
+      //  console.log('done');
+
+        p2=[];
+for(var layer=0;layer<6;layer++) { // deciding number of layers
+        for(var f in friends){
+          p2.push(friends[f]);
+        }
+        friends =[];
+        for(var ll in p2){
+          for(var nuberifuser in myBeaconId){
+            if(p2[ll] == myBeaconId[nuberifuser]){
+            //  console.log('found friend of patient ',p2[ll],Number(useridinterctwith[nuberifuser]));
+              listArray.push({'name':otherBeaconUserName[nuberifuser] ,'parent': p2[ll]},);
+              // numbeofArr.str.push({'name':Number(useridinterctwith[nuberifuser]) ,'parent': Number(p2[ll])},);
+              // thisdataaaa["links"].push({"id":`${Number(tobecont)}`, "from": `${Number(p2[ll])}`, "to":`${Number(useridinterctwith[nuberifuser])}`, "type":"friend"});
+              // tobecont++;
+              friends.push(otherBeaconUserName[nuberifuser]);
+            }
+          }
+       //   console.log('done');
+        }
+        p2 = []; 
+        }
+    //    console.log("First boy");
+     //   console.log(listArray);
+        const result = Array.from(new Set(listArray.map(s=>s.name)))
+        .map(name=>{
+          return {
+            name: name,
+            parent: listArray.find(s => s.name===name).parent
+          };
+        });
+    //    console.log("Second boy");
+    //    console.log(result);
+        treeploting(result,totalPatientUsername[zee]);
+        listArray=[];
+    }
+    
+    
+  }
+  
+
+
+var w=150;
+var l=80;
+function treeploting(arr,pateint){
+  console.log(pateint);
+  var dataa=[];
+  for(i in arr){
+    if(!(arr[i].name===pateint)){
+      dataa.push(arr[i]);
+      console.log(arr[i]);
+    }
+  }
+  console.log(" Old ");
+  console.log(arr);
+  console.log(" New ");
+  console.log(dataa);
+
+if(arr.length > 30){
+      w = 150*arr.length;
+      l = 80*arr.length ;
+    }else if(arr.length > 20 && arr.length < 30){
+      w = 150*arr.length ;
+      l = 80*arr.length;
+    }
+    else if(arr.length > 5 && arr.length < 20){
+      w = 150*arr.length;
+      l = 80*arr.length ;
+    }else if(arr.length >=1  && arr.length < 5){
+      w = 150*arr.length ;
+      l = 80*arr.length ;
+    }
+  
+    const nest = (items, name = null, link = 'parent') =>
+  items
+    .filter(item => item[link] === name)
+    .map(item => ({ ...item, children: nest(items, item.name) }));
+   // console.log(arr.length);
+// set the dimensions and margins of the diagram
+
+var margin = {top: 40, right: 40, bottom: 50, left: 90},
+      width = 400 - margin.left - margin.right,
+      height = 400 - margin.top - margin.bottom;
+    
+    
+
+// declares a tree layout and assigns the size
+var treemap = d3.tree()
+    .size([width, height]);
+
+//  assigns the data to a hierarchy using parent-child relationships
+var nodes = d3.hierarchy(nest(dataa)[0]);
+
+// maps the node data to the tree layout
+nodes = treemap(nodes);
+
+// append the svg obgect to the body of the page
+// appends a 'group' element to 'svg'
+// moves the 'group' element to the top left margin
+var svg = d3.select("body").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom),
+    g = svg.append("g")
+      .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
+
+// adds the links between the nodes
+var link = g.selectAll(".link")
+    .data( nodes.descendants().slice(1))
+  .enter().append("path")
+    .attr("class", "link")
+    .attr("d", function(d) {
+       return "M" + d.x + "," + d.y
+         + "C" + d.x + "," + (d.y + d.parent.y) / 2
+         + " " + d.parent.x + "," +  (d.y + d.parent.y) / 2
+         + " " + d.parent.x + "," + d.parent.y;
+       });
+
+// adds each node as a group
+var node = g.selectAll(".node")
+    .data(nodes.descendants())
+  .enter().append("g")
+    .attr("class", function(d) { 
+      return "node" + 
+        (d.children ? " node--internal" : " node--leaf"); })
+    .attr("transform", function(d) { 
+      return "translate(" + d.x + "," + d.y + ")"; });
+
+// adds the circle to the node
+node.append("circle")
+  .attr("r", 10);
+
+// adds the text to the node
+node.append("text")
+  .attr("dy", ".35em")
+  .attr("y", function(d) { return d.children ? -20 : 20; })
+  .style("text-anchor", "middle")
+  .text(function(d) { return d.data.name; });
+  
+//     const nest = (items, name = null, link = 'parent') =>
+//   items
+//     .filter(item => item[link] === name)
+//     .map(item => ({ ...item, children: nest(items, item.name) }));
+
+    
+// // ************** Generate the tree diagram	 *****************
+// var margin = {top: 20, right: 120, bottom: 20, left: 120},
+// 	width = 200*arr.length - margin.right - margin.left,
+// 	height = 40*arr.length - margin.top - margin.bottom;
+	
+//     var i = 0,
+// 	duration = 750,
+// 	root;
+
+// var tree = d3.layout.tree()
+// 	.size([height, width]);
+
+// var diagonal = d3.svg.diagonal()
+// 	.projection(function(d) { return [d.y, d.x]; });
+
+  
+// var svg = d3.select("#chart_0").append("svg")
+// 	.attr("width", width + margin.right + margin.left)
+// 	.attr("height", height + margin.top + margin.bottom)
+//   .append("g")
+// 	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+// root = nest(arr)[0];
+// root.x0 = height / 2;
+// root.y0 = 0;
+// update(root);
+// d3.select(self.frameElement).style("height", "500px");
+
+
+// function update(source) {
+
+//   // Compute the new tree layout.
+//   var nodes = tree.nodes(root).reverse(),
+// 	  links = tree.links(nodes);
+
+//   // Normalize for fixed-depth.
+//   nodes.forEach(function(d) { d.y = d.depth * 180; });
+
+//   // Update the nodes…
+//   var node = svg.selectAll("g.node")
+// 	  .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+//   // Enter any new nodes at the parent's previous position.
+//   var nodeEnter = node.enter().append("g")
+// 	  .attr("class", "node")
+// 	  .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+// 	  .on("click", click);
+
+//   nodeEnter.append("circle")
+// 	  .attr("r", 1e-6)
+// 	  .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+//   nodeEnter.append("text")
+// 	  .attr("x", function(d) { return d.children || d._children ? -13 : 13; })
+// 	  .attr("dy", ".35em")
+// 	  .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+// 	  .text(function(d) { return d.name; })
+// 	  .style("fill-opacity", 1e-6);
+
+//   // Transition nodes to their new position.
+//   var nodeUpdate = node.transition()
+// 	  .duration(duration)
+// 	  .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+//   nodeUpdate.select("circle")
+// 	  .attr("r", 10)
+// 	  .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+//   nodeUpdate.select("text")
+// 	  .style("fill-opacity", 1);
+
+//   // Transition exiting nodes to the parent's new position.
+//   var nodeExit = node.exit().transition()
+// 	  .duration(duration)
+// 	  .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+// 	  .remove();
+
+//   nodeExit.select("circle")
+// 	  .attr("r", 1e-6);
+
+//   nodeExit.select("text")
+// 	  .style("fill-opacity", 1e-6);
+
+//   // Update the links…
+//   var link = svg.selectAll("path.link")
+// 	  .data(links, function(d) { return d.target.id; });
+
+//   // Enter any new links at the parent's previous position.
+//   link.enter().insert("path", "g")
+// 	  .attr("class", "link")
+// 	  .attr("d", function(d) {
+// 		var o = {x: source.x0, y: source.y0};
+// 		return diagonal({source: o, target: o});
+// 	  });
+
+//   // Transition links to their new position.
+//   link.transition()
+// 	  .duration(duration)
+// 	  .attr("d", diagonal);
+
+//   // Transition exiting nodes to the parent's new position.
+//   link.exit().transition()
+// 	  .duration(duration)
+// 	  .attr("d", function(d) {
+// 		var o = {x: source.x, y: source.y};
+// 		return diagonal({source: o, target: o});
+// 	  })
+// 	  .remove();
+
+//   // Stash the old positions for transition.
+//   nodes.forEach(function(d) {
+// 	d.x0 = d.x;
+// 	d.y0 = d.y;
+//   });
+// }
+
+// // Toggle children on click.
+// function click(d) {
+//   if (d.children) {
+// 	d._children = d.children;
+// 	d.children = null;
+//   } else {
+// 	d.children = d._children;
+// 	d._children = null;
+//   }
+//   update(d);
+// }  
+
+}
+
+</script>
+  </body>
+</html>
+
+
+
+
+ 
+
+
+

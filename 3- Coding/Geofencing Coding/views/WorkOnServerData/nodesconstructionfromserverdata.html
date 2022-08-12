@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Node Plotting</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
+
+ <!--<link rel="stylesheet" href="./css/main.css">-->
+<style>
+
+/* .node {
+		cursor: pointer;
+	}
+
+	.node circle {
+	  fill: #fff;
+	  stroke: steelblue;
+	  stroke-width: 3px;
+	}
+
+	.node text {
+	  font: 2px sans-serif;
+	}
+
+	.link {
+	  fill: none;
+	  stroke: #ccc;
+	   stroke-width: 2px; 
+	} */
+
+
+</style>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
+
+  </head>
+
+  <body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+
+    <div id="chart_0"></div>
+    <div id="chart_1"></div>
+    <script src="https://cdn.zoomcharts-cloud.com/1/latest/zoomcharts.js"></script>
+<content>
+<div id="demo"></div>
+
+<div id="generallinks"></div>
+
+</content>
+    <script>
+
+   getData();
+
+   var arrayofallusers=[];
+   var columns;
+   var username=[];
+   var useridinterctwith=[];
+   var state=[];
+   var user_profile = {};
+   var myid=[];
+   var numbeofArr={};
+   var thisdataaaa={
+    "nodes":[
+        {"id":"0", "age":20, "name":"Joe", "loaded":true}
+   ],
+
+    "links":[ 
+    ]
+};
+  
+  
+
+
+
+   async function getData(){
+    const responseofStatustable = await fetch('http://52.74.221.135:5000/users_status/all ');
+    var responseofStatustableData = await responseofStatustable.json();
+   // Storing response
+   const response1 = await fetch('http://52.74.221.135:5000/beacon_data/bacha');
+    
+    // Storing data in form of JSON
+    var data1 = await response1.json();
+    var ddd=0;
+    var mineid=[];
+    var otherid=[];
+    var dist = [];
+   var distfortiestrength=0;
+var Rounddistfortiestrength=0;
+   var tobecont=0;
+    for (let r of data1) {
+
+      username.push(r.uname);
+      myid.push(r.u_beaconid);
+      useridinterctwith.push(r.beaconid_others);
+      dist.push(r.distance);
+
+      var personID='0';
+      var personID2='0';
+      var statusofPerson='';
+      var usernameee='';
+      var otheruname='';
+      var statusofPersonOther='';
+    if(!((r.u_beaconid === "") || (r.beaconid_others === ""))){
+        if(!(personID===r.u_beaconid)){
+            for(let state of responseofStatustableData){
+                if(r.u_beaconid===state.patient_beacon){
+                    usernameee = state.uname;
+                    statusofPerson = state.status;
+                    //console.log("lolololo  " + usernameee + '  ' + r.u_beaconid + ' ' + state.patient_beacon);
+                }
+                if(r.beaconid_others===state.patient_beacon){
+                    otheruname = state.uname;
+                    statusofPersonOther = state.status;
+                }
+            }
+            if(!((statusofPerson==='') || (usernameee===''))){
+                if(statusofPerson==='Normal'){
+                    thisdataaaa["nodes"].push({"id":`${usernameee}`, "age":20, "name":"a", "loaded":true,"style":{ "fillColor": "green"}});
+                    personID=r.u_beaconid;
+                }else if(statusofPerson==='Infected'){
+                    thisdataaaa["nodes"].push({"id":`${usernameee}`, "age":20, "name":"a", "loaded":true,"style":{ "fillColor": "red"}});
+                    personID=r.u_beaconid;
+                }else{
+                    thisdataaaa["nodes"].push({"id":`${usernameee}`, "age":20, "name":"a", "loaded":true,"style":{ "fillColor": "yellow"}});
+                    personID=r.u_beaconid;
+                }
+                
+            }
+
+    }
+
+    if(!(personID2===r.beaconid_others)){
+        if(!((statusofPersonOther==='') || (otheruname===''))){
+            if(statusofPersonOther==='Normal'){
+                thisdataaaa["nodes"].push({"id": `${otheruname}`, "age":20, "name":"a", "loaded":true,"style":{ "fillColor": "green"}});
+                personID2=r.beaconid_others;
+            }else if(statusofPersonOther==='Infected'){
+                thisdataaaa["nodes"].push({"id": `${otheruname}`, "age":20, "name":"a", "loaded":true,"style":{ "fillColor": "red"}});
+                personID2=r.beaconid_others;
+            }else{
+                thisdataaaa["nodes"].push({"id": `${otheruname}`, "age":20, "name":"a", "loaded":true,"style":{ "fillColor": "yellow"}});
+                personID2=r.beaconid_others;
+            }
+        }
+        // thisdataaaa["nodes"].push({"id": `${Number(columns[1])}`, "age":20, "name":"a", "loaded":true,"style":{ "fillColor": "rgba(236,46,46,0.8)"}});
+    }
+    
+  //  thisdataaaa["links"].push({"id":`${Number(tobecont)}p`, "from": `${r.u_beaconid}`, "to":`${r.beaconid_others}`, "type":"friend"});
+  
+    
+    if(!((usernameee==='') || (otheruname===''))){
+    distfortiestrength = 1/Number(r.distance);
+    Rounddistfortiestrength = distfortiestrength.toFixed(2);
+  //  thisdataaaa["links"].push({"id":`${Number(tobecont)}p`, "from": `${usernameee}`, "to":`${otheruname}`, "type":"friend","style":{"fillColor":"rgba(236,46,46,1)","label" : `${Rounddistfortiestrength}%` , radius:distfortiestrength}});
+    thisdataaaa["links"].push({"id":`${Number(tobecont)}p`, "from": `${usernameee}`, "to":`${otheruname}`, "type":"friend","style":{"fillColor":"rgba(236,46,46,1)"}});
+    tobecont++;
+    }
+
+}
+   // console.log(rndInt);
+
+    }
+
+    const indexx = thisdataaaa.nodes.indexOf(thisdataaaa.nodes[0]);
+    if (indexx > -1) {
+      thisdataaaa.nodes.splice(indexx, 1);
+    }
+    
+
+    noding(thisdataaaa);
+  //  console.log(thisdataaaa);
+  }
+  
+
+
+
+function noding(arrival){
+  
+ 
+  var div = document.createElement('div');  
+//console.log(thisdataaaa);
+  chart = new NetChart({
+      
+        
+
+        container: document.body.appendChild(div),
+
+        area: { height: 350 },
+        data: { preloaded: arrival },
+        style: { 
+            node: { display: "text" },
+            nodeStyleFunction: function(node){ node.radius=30; },
+            textStyle: {
+                    font: "10px",
+                    shadowOffsetY: 1
+                }
+            
+        },
+        filters: {
+    multilinkProcessor: function (linksData, fromNodeData, toNodeData) {
+      return linksData[0];
+    },
+    
+    
+  }
+    });
+    function linkHighlight(link) {
+  if (bundleLinks) {
+    link.fillColor = "Gray";
+  }
+}
+}
+
+
+//     var iii=0;
+// var sss=(Object.keys(thisdataaaa.links).length);
+//     for(var row=0;row<sss;row++){
+//         // if(iii===1){
+//         //     break;
+//         // }
+//         var me=thisdataaaa.links[iii]['from'];
+//         var you=thisdataaaa.links[iii]['to'];
+        
+//         var userLat = (`user_${iii}`);
+//        // console.log(userLat);
+//         userLat=0;
+//         for(var r=0;r<(Object.keys(thisdataaaa.links).length);r++){  
+//             if((me===thisdataaaa.links[r]['from']) && (you===thisdataaaa.links[r]['to'])){
+//                 userLat++;
+//                 console.log(userLat);
+//                 if(userLat>1){
+//                     const indexxx = thisdataaaa.links.indexOf(thisdataaaa.links[r]);
+//                     if (indexxx > -1) {
+//                         thisdataaaa.links.splice(indexxx, 1);
+//                     }
+//                 }
+//             }
+//         }
+//         iii++;
+//     }
+
+
+</script>
+  </body>
+</html>
+
+
+
+
+

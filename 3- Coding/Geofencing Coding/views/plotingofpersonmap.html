@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>region Based Map</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+  <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js" type="text/javascript" charset="utf-8"></script>
+  <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js" type="text/javascript" charset="utf-8"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <style type="text/css">
+    /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+    #map {
+      height: 70%;
+    }
+
+    /* Optional: Makes the sample page fill the window. */
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+
+  <script>
+    
+var dictLat1 = {
+      user_0: [],
+    };
+  
+    var dictLong1 = {
+      user_0: [],                                
+  };
+
+async function fetchdatafromcsv() {
+    
+       
+    }
+
+    
+
+
+
+
+
+    function calcCrow(lat1, lon1, lat2, lon2) {
+      var R = 6371; // km
+      var dLat = toRad(lat2 - lat1);
+      var dLon = toRad(lon2 - lon1);
+      var lat1 = toRad(lat1);
+      var lat2 = toRad(lat2);
+
+      var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      var d = R * c;
+      return d;
+    }
+
+    // Converts numeric degrees to radians
+    function toRad(Value) {
+      return Value * Math.PI / 180;
+    }
+
+    var dictLat = {
+      user_0: [37.600795, 37.600843, 37.600860,37.600501],
+      user_1: [37.614930, 37.612164],
+     // user_2: [37.600751, 37.600851, 37.600851, 37.600951,37.600951,37.600851,37.600851,37.600851,37.600851,37.600751,37.600751,37.600851,37.600951,37.601051,37.601051,37.601151,37.601251,37.601251,37.601351,37.601451,37.601451,37.601451,37.601551,37.601551,37.601451,37.601351,37.601251,37.601151,37.601051,37.600951,37.600951,37.600851,37.600751,37.600751,37.600751,37.600751,37.600751],
+      //   user_2: [37.600795, 37.600843, 37.600860, 37.600902,37.600902,37.600869,37.600896,37.600859,37.600816,37.600773,37.600770,37.600848,37.600935,37.601000,37.601093,37.601173,37.601231,37.601249,37.601337,37.601438,37.601480,37.601495,37.601511,37.601525,37.601436,37.601334,37.601246,37.601151,37.601076,37.600980,37.600901,37.600865,37.600799,37.600747,37.600747,37.600739,37.600734,],
+     // user_3: [37.600795, 37.600843, 37.600860, 37.600902,37.600902,37.600869,37.600896,37.600859,37.600816,37.600773,37.600770,37.600848,37.600935,37.601000,37.601093,37.601173,37.601231,37.601249,37.601337,37.601438,37.601480,37.601495,37.601511,37.601525,37.601436,37.601334,37.601246,37.601151,37.601076,37.600980,37.600901,37.600865,37.600799,37.600747,37.600747,37.600739,37.600734,],
+    
+    };
+  
+    var dictLong = {
+      user_0: [126.864614, 126.864444, 126.864302,126.866022],                                
+      user_1: [126.837789, 126.838384],                                
+     // user_2: [126.864610, 126.864410, 126.864310, 126.864410,126.864410,126.864310,126.864410,126.864510,126.864610,126.864710,126.864810,126.864910,126.864910,126.864810,126.864810,126.864910,126.865010,126.865110,126.865110,126.865210,126.865110,126.864910,126.864810,126.864710,126.864710,126.864710,126.864610,126.864610,126.864710,126.864610,126.864510,126.864410,126.864510,126.864610,126.864610,126.864610,126.864610],                                
+   //  user_2: [126.864614, 126.864444, 126.864302, 126.864425,126.864425,126.864308,126.864420,126.864524,126.864629,126.864732,126.864849,126.864921,126.864969,126.864883,126.864875,126.864929,126.865018,126.865130,126.865181,126.865210,126.865107,126.864993,126.864869,126.864755,126.864723,126.864703,126.864668,126.864662,126.864729,126.864611,126.864541,126.864427,126.864564,126.864645,126.864644,126.864618,126.864623],                                
+    //  user_3: [126.864614, 126.864444, 126.864302, 126.864425,126.864425,126.864308,126.864420,126.864524,126.864629,126.864732,126.864849,126.864921,126.864969,126.864883,126.864875,126.864929,126.865018,126.865130,126.865181,126.865210,126.865107,126.864993,126.864869,126.864755,126.864723,126.864703,126.864668,126.864662,126.864729,126.864611,126.864541,126.864427,126.864564,126.864645,126.864644,126.864618,126.864623],                                
+    };
+
+    var UserLocations = [];
+  //  var PatientNearLocationsNew=[];
+  var SeriousRegions = [
+      { lng: 126.865169, lat: 37.599379 },
+      { lng: 126.871695, lat: 37.604026 },
+      { lng: 126.848110, lat: 37.614038 },
+      { lng: 126.837789, lat: 37.614930 },
+  ];
+    var PatientNearLocations = [
+      { lng: 126.864614, lat: 37.600795 },
+      { lng: 126.864444, lat: 37.600843 },
+      { lng: 126.864302, lat: 37.600860 },
+      { lng: 126.864425, lat: 37.600902 },
+      { lng: 126.864425, lat: 37.600902 },
+      { lng: 126.864308, lat: 37.600869 },
+      { lng: 126.864420, lat: 37.600896 },
+      { lng: 126.864524, lat: 37.600859 },
+      { lng: 126.864629, lat: 37.600816 },
+      { lng: 126.864732, lat: 37.600773 },
+      { lng: 126.864849, lat: 37.600770 },
+      { lng: 126.864921, lat: 37.600848 },
+      { lng: 126.864969, lat: 37.600935 },
+      { lng: 126.864883, lat: 37.601000 },
+      { lng: 126.864875, lat: 37.601093 },
+      { lng: 126.864929, lat: 37.601173 },
+      { lng: 126.865018, lat: 37.601231 },
+      { lng: 126.865130, lat: 37.601249 },
+      { lng: 126.865181, lat: 37.601337 },
+      { lng: 126.865210, lat: 37.601438 },
+      { lng: 126.865107, lat: 37.601480 },
+      { lng: 126.864993, lat: 37.601495 },
+      { lng: 126.864869, lat: 37.601511 },
+      { lng: 126.864755, lat: 37.601525 },
+      { lng: 126.864723, lat: 37.601436 },
+      { lng: 126.864703, lat: 37.601334 },
+      { lng: 126.864668, lat: 37.601246 },
+      { lng: 126.864662, lat: 37.601151 },
+      { lng: 126.864729, lat: 37.6010765 },
+      { lng: 126.864611, lat: 37.600980 },
+      { lng: 126.864541, lat: 37.600901 },
+      { lng: 126.864427, lat: 37.600865 },
+      { lng: 126.864564, lat: 37.600799 },
+      { lng: 126.864645, lat: 37.600747 },
+      { lng: 126.864644, lat: 37.600747 },
+      { lng: 126.864618, lat: 37.600739 },
+      { lng: 126.864623, lat: 37.600734 }
+    ];
+  //  console.log(PatientNearLocations);
+  
+    var numberofUsers = [];
+function d(){
+    
+    for (var i = 0; i < Object.keys(ServerTotalUserSensorsDataLat).length; i++) {   
+      numberofUsers[i] = [i];
+    }
+
+
+    for (const lat of numberofUsers) {
+      //  console.log(`user_${ lat }`);
+      
+      var userLat = (`user_${lat}`);
+      var userLon = (`user_${lat}`);
+
+      var lati = ServerTotalUserSensorsDataLat[userLat];
+      var long = ServerTotalUserSensorsDataLon[userLon];
+      console.log("all complete");
+      for (const i in lati) {
+          
+        //  console.log(lati[i]);
+        //  console.log(long[i]);
+        // near[{lng:long[i], lat:lati[i]}];
+      }
+
+    }
+}
+// Sensor Data:
+// http://52.74.221.135:5000/sensor_data_for_bacha
+
+// async function getsensordata(){
+//     let response = await fetch('http://52.74.221.135:5000/sensor_data_for_bacha');
+//     let data = await response.json();
+//     return data;
+// }
+var ServerTotalUserSensorsDataLat = {};
+var ServerTotalUserSensorsDataLon = {};
+    async function initMap() {
+      
+
+      const responseofUserReg = await fetch('http://52.74.221.135:5000/users');
+      var responseofUserRegData = await responseofUserReg.json();
+
+
+      const responseofSsensorData = await fetch('http://52.74.221.135:5000/sensor_data_for_bacha');
+      var responseofSsensorDataTable = await responseofSsensorData.json();
+
+      var u=0;
+      for(let user of responseofUserRegData){
+        
+        var userLat = (`user_${u}`);
+        userLat = [];
+        var userLon = (`user_${u}`);
+        userLon = [];
+        for(let latlon of responseofSsensorDataTable){
+          if(user.uname === latlon.uname){
+           // ServerTotalUserSensorsData.user0.push(latlon.lat);
+        //   console.log(latlon.lat);
+           userLat.push(Number(latlon.lat));
+           userLon.push(Number(latlon.lat));
+          }
+        }
+        ServerTotalUserSensorsDataLat['user_'+u]=userLat;
+        ServerTotalUserSensorsDataLon['user_'+u]=userLon;
+        u++;
+      }
+
+console.log(ServerTotalUserSensorsDataLat);
+        d();
+
+      const map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 18,
+        center: { lat: 37.600795, lng: 126.864614 },
+
+        mapTypeId: "satellite",
+        // mapTypeId: "terrain",
+      });
+
+
+
+      var disofPatients;
+      var counter = 0;
+      var sum=0.0;
+      var averagedist = 0;
+      var p1lat = (`user_${0}`);
+      var p1lon = (`user_${0}`);
+      var p1ll = ServerTotalUserSensorsDataLat[p1lat];
+      var p1lg = ServerTotalUserSensorsDataLon[p1lon];
+
+      for (var lat = 0; lat < (Object.keys(numberofUsers).length); lat = lat + 1) {
+
+        var userLat = (`user_${lat}`);
+
+        var userLon = (`user_${lat}`);
+
+        var lati = ServerTotalUserSensorsDataLat[userLat];
+
+        var long = ServerTotalUserSensorsDataLon[userLon];
+
+        console.log("all complete");
+        for (const i in lati) {
+          //  console.log(lati[i]);
+          UserLocations.push({ lng: long[i], lat: lati[i] });
+          disofPatients = calcCrow(lati[i], long[i], p1ll[i], p1lg[i]).toFixed(2);
+          console.log("Distance: " + disofPatients + " km");
+          sum = Number(sum) + Number(disofPatients);
+          //  console.log(long[i]);
+          // near[{lng:long[i], lat:lati[i]}];
+        }
+        averagedist = sum/lati.length;
+     //   console.log(averagedist);
+        if (averagedist < 100) {
+          counter++;
+        }
+        sum=0;
+
+        var poll = new google.maps.Polygon({
+          paths: UserLocations,
+          strokeColor: '#FFFFFF',
+        //  strokeOpacity: 0.0,
+          strokeWeight: 0.8,
+        //  fillColor: '#FF0000',
+          fillOpacity: 0,
+          map: map,
+        });
+
+        UserLocations =[];
+      }
+
+
+
+
+
+
+      ///////////////////////////////////////// GPS Based ///////////////////////////////////////
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+        //  console.log("GPS based Location ");
+          //console.log(position.coords);
+
+      //    console.log("Latitude: " + position.coords.latitude);
+       //   console.log("Longitude: " + position.coords.longitude);
+      //    console.log("Altitude: " + position.coords.altitude);
+       //   console.log("Speed: " + position.coords.speed);
+        //  console.log("Accuracy: " + position.coords.accuracy);
+        });
+      } else {
+    //    console.error("Geolocation is not supported by this browser!");
+      }
+      ///////////////////////////////////////// GPS Based ///////////////////////////////////////
+
+      ///////////////////////////////////////// IP Based ///////////////////////////////////////
+      fetch('https://extreme-ip-lookup.com/json/')
+        .then(res => res.json())
+        .then(response => {
+       //   console.log("\nIP Base Location")
+       //   console.log("Country: ", response.country);
+
+       //   console.log("Latitude: ", response.lat);
+        //  console.log("Longitude: ", response.lng);
+        //  console.log("City Name: ", response.cityCircle);
+
+        }).catch((data, status) => {
+        //  console.log('Request failed');
+        })
+
+      ///////////////////////////////////////// IP Based ///////////////////////////////////////
+
+      // Create the map.
+
+
+      
+
+
+      var colors = ["yellow", "green", "blue", "red"];
+      for (const lat of numberofUsers) {
+        //console.log(`user_${ lat }`);
+        var userLat = (`user_${lat}`);
+        var userLon = (`user_${lat}`);
+        var lati = ServerTotalUserSensorsDataLat[userLat];
+        var long = ServerTotalUserSensorsDataLon[userLon];
+
+        let url = "http://maps.google.com/mapfiles/ms/icons/";
+        url += colors[lat] + "-dot.png"
+
+        for (const i in lati) {
+         //  console.log(lati[i]);
+        //   console.log(long[i]);
+          const cityCircle = new google.maps.Circle({
+            strokeColor: "#000000",
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: "#000000",
+            fillOpacity: 0.35,
+            map,
+            center: { lat: lati[i], lng: long[i] },
+            radius: 2,
+            //radius: Math.sqrt(citymap[city].population) * 100,
+          });
+
+          const marker = new google.maps.Marker({
+
+            position: { lat: lati[i], lng: long[i] },
+            map: map,
+            icon: { url: url }
+            // icon: "https://img.icons8.com/nolan/2x/marker.png"
+          });
+         // console.log(url);
+        }
+
+      }
+
+
+      // Construct the polygon.
+    //  console.log("Number of Users: " + Object.keys(dictLat).length);
+  /* 
+    console.log("0000000000000000000000000000000000000000000000000000");
+      console.log(PatientNearLocationsNew);
+        var pol = new google.maps.Polygon({
+          paths: PatientNearLocations,
+          strokeColor: '#000000',
+          strokeOpacity: 0.8,
+          strokeWeight: 3,
+          fillColor: '#FF0000',
+          fillOpacity: 0.35,
+          map: map,
+        });
+      // Draw the polygon on the desired map instance
+      pol.setMap(map);
+*/
+
+      var distofUserfromRegion;
+
+//console.log("User distance from serious regions\n");
+      for (var k = 0; k < (Object.keys(SeriousRegions).length); k = k + 1) {
+        
+        var regLat = SeriousRegions[k].lat
+        var regLon = SeriousRegions[k].lng
+        
+        for(var i=0; i < (Object.keys(ServerTotalUserSensorsDataLat).length); i = i + 1 ){
+          var userLati = (`user_${i}`);
+          var userLoni = (`user_${i}`);
+          var latii = ServerTotalUserSensorsDataLat[userLati];
+          var longii = ServerTotalUserSensorsDataLon[userLoni];
+
+          for (var j=0; j < (Object.keys(latii).length); j = j + 1 ) {
+            distofUserfromRegion = calcCrow(latii[j], longii[j], regLat, regLon).toFixed(5);
+            console.log("Distance of "+ userLati +" is " + distofUserfromRegion + " km from region " + k);
+            if(distofUserfromRegion <= 0.15){
+              console.log("You are enter in a red alert region so take care of yourself ");
+            }
+          }
+          console.log("User Complete");
+        }
+        console.log("\n\n\nRegion Complete");
+      }
+
+
+
+
+for (const i in SeriousRegions){
+const cityCircle = new google.maps.Circle({
+            strokeColor: "#FF0000",
+            strokeOpacity: 0.8,
+            strokeWeight: 1,
+            fillColor: "#FF0000",
+            fillOpacity: 0.1,
+            map,
+            center: { lat: SeriousRegions[i].lat, lng: SeriousRegions[i].lng },
+            radius: 150,  // meter
+            //radius: Math.sqrt(citymap[city].population) * 100,
+          });
+          }
+
+    }
+
+
+  </script>
+
+</head>
+
+<body>
+  <div id="map"></div>
+  <div id="demo"></div>
+
+  <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=&callback=initMap&libraries=&v=weekly" async></script>
+</body>
+
+</html>

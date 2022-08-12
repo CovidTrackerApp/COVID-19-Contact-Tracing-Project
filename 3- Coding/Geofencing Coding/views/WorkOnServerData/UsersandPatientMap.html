@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>region Based Map</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style type="text/css">
+        /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+        
+        #map {
+            height: 70%;
+        }
+        /* Optional: Makes the sample page fill the window. */
+        
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+
+    <script>
+        function calcCrow(lat1, lon1, lat2, lon2) {
+            var R = 6371; // km
+            var dLat = toRad(lat2 - lat1);
+            var dLon = toRad(lon2 - lon1);
+            var lat1 = toRad(lat1);
+            var lat2 = toRad(lat2);
+
+            var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            var d = R * c;
+            return d;
+        }
+
+        function toRad(Value) {
+            return Value * Math.PI / 180;
+        }
+        var TotalPatientSensorsDataLat = {};
+        var TotalPatientSensorsDataLon = {};
+
+        var TotalUserSensorsDataLat = {};
+        var TotalUserSensorsDataLon = {};
+
+        async function initMap() {
+
+            var TotalPatient = [41, 42, 43];
+
+            const regUsers = await fetch('regUsers.json');
+            var regUsersData = await regUsers.json();
+
+            const UsersStatus = await fetch('userstatus.json');
+            var UsersStatusData = await UsersStatus.json();
+
+            var totalPatient = [];
+
+            for (let user of regUsersData) {
+                var patientt = '';
+                for (let patient of UsersStatusData) {
+                    if (user.uname === patient.uname) {
+                        if (patient.status === 'Infected') {
+                            patientt = patient.status;
+
+                        } else {
+                            patientt = patient.status;
+                        }
+                    }
+                }
+                if (patientt === 'Infected') {
+                    totalPatient.push(user.uname);
+                }
+            }
+            console.log(totalPatient);
+
+            const PatientTraces = await fetch('latlongdata.json');
+            var PatientTracesData = await PatientTraces.json();
+
+            for (i in totalPatient) {
+                var patientLat = (`${totalPatient[i]}`);
+                patientLat = [];
+                var patientLon = (`${totalPatient[i]}`);
+                patientLon = [];
+                for (let ltln of PatientTracesData) {
+                    if (totalPatient[i] === ltln.uname) {
+                        patientLat.push(Number(ltln.lat));
+                        patientLon.push(Number(ltln.long));
+                    }
+                }
+                TotalPatientSensorsDataLat[`${totalPatient[i]}`] = patientLat;
+                TotalPatientSensorsDataLon[`${totalPatient[i]}`] = patientLon;
+            }
+            console.log(TotalPatientSensorsDataLat, TotalPatientSensorsDataLon)
+
+
+            var totalUsers = [];
+
+            for (let user of regUsersData) {
+                var normalUsers = '';
+                for (let userStatus of UsersStatusData) {
+                    if (user.uname === userStatus.uname) {
+                        if (userStatus.status === 'Normal') {
+                            normalUsers = userStatus.status;
+                        } else {
+                            normalUsers = userStatus.status;
+                        }
+                    }
+                }
+                if (normalUsers === 'Normal') {
+                    totalUsers.push(user.uname);
+                }
+            }
+
+            console.log(totalUsers)
+            for (i in totalUsers) {
+                var userLat = (`${totalUsers[i]}`);
+                userLat = [];
+                var userLon = (`${totalUsers[i]}`);
+                userLon = [];
+                for (let ltln of PatientTracesData) {
+                    if (totalUsers[i] === ltln.uname) {
+                        userLat.push(Number(ltln.lat));
+                        userLon.push(Number(ltln.long));
+                    }
+                }
+                TotalUserSensorsDataLat[`${totalUsers[i]}`] = userLat;
+                TotalUserSensorsDataLon[`${totalUsers[i]}`] = userLon;
+            }
+            console.log(TotalUserSensorsDataLat, TotalUserSensorsDataLon)
+
+
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 18,
+                center: {
+                    lat: 37.6007629,
+                    lng: 126.8646261
+                },
+
+                mapTypeId: "satellite",
+                // mapTypeId: "terrain",
+            });
+
+
+            var icn = 0;
+            var colors = ["yellow", "green", "blue", "red"];
+            var UserLocations = [];
+            const lineSymbol = {
+                path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+            };
+
+            for (var i = 0; i < totalPatient.length; i++) {
+
+
+                var patientLat = (`${totalPatient[i]}`);
+                var lat = TotalPatientSensorsDataLat[patientLat];
+
+                var patientLon = (`${totalPatient[i]}`);
+                var lon = TotalPatientSensorsDataLon[patientLon];
+
+
+                // let url = "http://maps.google.com/mapfiles/ms/icons/red-dot.png";
+                for (const i in lat) {
+                    UserLocations.push({
+                        lat: lat[i],
+                        lng: lon[i]
+                    });
+                    const marker = new google.maps.Marker({
+                        position: {
+                            lat: lat[i],
+                            lng: lon[i]
+                        },
+                        map: map,
+                        icon: {
+                            url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+                        }
+                    });
+                    const cityCircle = new google.maps.Circle({
+                        strokeColor: "#000000",
+                        strokeOpacity: 0.8,
+                        strokeWeight: 2,
+                        fillColor: "#000000",
+                        fillOpacity: 0.35,
+                        map,
+                        center: {
+                            lat: lat[i],
+                            lng: lon[i]
+                        },
+                        radius: 10,
+                        //radius: Math.sqrt(citymap[city].population) * 100,
+                    });
+                }
+                const line = new google.maps.Polyline({
+                    path: UserLocations,
+                    strokeColor: "#FFFFFF",
+                    icons: [{
+                        icon: lineSymbol,
+                        offset: "100%",
+                    }, ],
+                    map: map,
+                });
+                UserLocations = [];
+            }
+
+
+            for (var i = 0; i < totalUsers.length; i++) {
+
+                var userLat = (`${totalUsers[i]}`);
+                var lat = TotalUserSensorsDataLat[userLat];
+
+                var userLon = (`${totalUsers[i]}`);
+                var lon = TotalUserSensorsDataLon[userLon];
+
+
+                // let url = "http://maps.google.com/mapfiles/ms/icons/";
+                // if(lat.length>0){
+                // url += colors[Number(icn)] + "-dot.png"
+                // icn++;
+                // }
+                for (const i in lat) {
+                    UserLocations.push({
+                        lat: lat[i],
+                        lng: lon[i]
+                    });
+                    const marker = new google.maps.Marker({
+                        position: {
+                            lat: lat[i],
+                            lng: lon[i]
+                        },
+                        map: map,
+                        icon: {
+                            url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+                        }
+                    });
+
+                    const cityCircle = new google.maps.Circle({
+                        strokeColor: "#000000",
+                        strokeOpacity: 0.8,
+                        strokeWeight: 2,
+                        fillColor: "#000000",
+                        fillOpacity: 0.35,
+                        map,
+                        center: {
+                            lat: lat[i],
+                            lng: lon[i]
+                        },
+                        radius: 10,
+                        //radius: Math.sqrt(citymap[city].population) * 100,
+                    });
+                }
+
+                const line = new google.maps.Polyline({
+                    path: UserLocations,
+                    strokeColor: "#FFFFFF",
+                    icons: [{
+                        icon: lineSymbol,
+                        offset: "100%",
+                    }, ],
+                    map: map,
+                });
+                UserLocations = [];
+            }
+
+            var distofUserfromPatient = 0;
+            var linefromPatient = [];
+            for (var i = 0; i < (Object.keys(TotalUserSensorsDataLon).length); i++) {
+
+                var userLat = (`${totalUsers[i]}`);
+                var Ulat = TotalUserSensorsDataLat[userLat];
+
+                var userLon = (`${totalUsers[i]}`);
+                var Ulon = TotalUserSensorsDataLon[userLon];
+
+
+
+
+                for (var j = 0; j < (Object.keys(TotalPatientSensorsDataLat).length); j++) {
+
+                    var patientLat = (`${totalPatient[j]}`);
+                    var Plat = TotalPatientSensorsDataLat[patientLat];
+
+                    var patientLon = (`${totalPatient[j]}`);
+                    var Plon = TotalPatientSensorsDataLon[patientLon]
+
+
+                    var sizeofLatLon = 0;
+                    if (Ulat.length < Plat.length) {
+                        sizeofLatLon = Ulat.length;
+
+                    } else {
+                        sizeofLatLon = Plat.length;
+                    }
+                    for (var k = 0; k < sizeofLatLon; k++) {
+                        distofUserfromPatient = calcCrow(Plat[k], Plon[k], Ulat[k], Ulon[k]).toFixed(5);
+
+                        linefromPatient.push({
+                            lat: Ulat[k],
+                            lng: Ulon[k]
+                        });
+                        linefromPatient.push({
+                            lat: Plat[k],
+                            lng: Plon[k]
+                        });
+                        if (distofUserfromPatient < 1) {
+                            const line = new google.maps.Polyline({
+                                path: linefromPatient,
+                                strokeColor: "#FF0000",
+                                icons: [{
+                                    icon: lineSymbol,
+                                    offset: "100%",
+                                }, ],
+                                strokeOpacity: 1.0,
+                                strokeWeight: 3,
+                                map: map,
+                            });
+                            var homeLatlng = new google.maps.LatLng(Number(Ulat[k]), Number(Ulon[k]));
+                            var latLng = new google.maps.LatLng(Number(Plat[k]), Number(Plon[k]));
+
+                            var inBetween = google.maps.geometry.spherical.interpolate(homeLatlng, latLng, 0.5);
+
+                            new google.maps.Marker({
+                                position: {
+                                    lat: inBetween.lat(),
+                                    lng: inBetween.lng()
+                                },
+                                label: {
+                                    text: distofUserfromPatient.toString() + 'km',
+                                    color: '#fff',
+                                    fontSize: '20px',
+                                    fontWeight: 'bold',
+                                    fontFamily: 'custom-label'
+                                },
+                                map: map,
+                                icon: 'http://imageshack.us/a/img826/9489/x1my.png',
+                            });
+                        }
+
+                        linefromPatient = [];
+                        console.log(userLat, distofUserfromPatient + 'km')
+
+                    }
+                }
+
+            }
+
+
+        }
+    </script>
+
+</head>
+
+<body>
+    <div id="map"></div>
+    <div id="demo"></div>
+
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=&callback=initMap&libraries=&v=weekly" async></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3&sensor=false&libraries=geometry" async></script>
+
+</body>
+
+</html>
